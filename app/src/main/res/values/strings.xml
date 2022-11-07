@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">YoutubeMusicPlayer</string>
+    <string name="download_music">Download music</string>
+    <string name="content_description_download_music">It is to navigate to another activity to download music from YouTube</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
