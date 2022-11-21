@@ -3,14 +3,18 @@ package com.example.android.youtubemusicplayer
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
+import android.view.View
+import android.widget.LinearLayout
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.example.android.youtubemusicplayer.database.SongDatabase
 import com.example.android.youtubemusicplayer.download_music.DownloadMusicActivity
+import com.example.android.youtubemusicplayer.songs.SongsFragment
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -61,6 +65,13 @@ class MainActivity : AppCompatActivity() {
             }
         }
         tabLayoutMediator.attach()
+
+        val playerLinearLayout = findViewById<LinearLayout>(R.id.player_item);
+
+        playerLinearLayout.setOnClickListener(View.OnClickListener {
+            val fragment: SongsFragment =
+                FragmentActivity().supportFragmentManager.fragments.get(0) as SongsFragment;
+        })
     }
 
     val launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult(), ActivityResultCallback {
