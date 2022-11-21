@@ -12,15 +12,4 @@ class SongsViewModel(val database: SongDatabaseDao,
                      application: Application) : AndroidViewModel(application) {
 
     val songs : LiveData<List<Song>> = database.getSongs();
-    //private var songs: LiveData<List<Song>>? = null;
-    //private var songs = MutableLiveData<Song?>()
-
-    init {
-        //songs = databaseDao.getSongs();
-        //val db: SongDatabase = SongDatabase.getInstance(application)
-        //val songDatabaseDao = db.songDatabaseDao;
-        /*val databaseDao: SongDatabaseDao;
-
-        songs = databaseDao.getSongs();*/
-    }
 }

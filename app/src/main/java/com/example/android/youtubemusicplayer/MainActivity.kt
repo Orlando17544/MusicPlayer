@@ -33,8 +33,8 @@ class MainActivity : AppCompatActivity() {
 
         val topAppBar = findViewById<MaterialToolbar>(R.id.topAppBar)
 
-        topAppBar.setOnMenuItemClickListener(Toolbar.OnMenuItemClickListener { item ->
-            when (item.itemId) {
+        topAppBar.setOnMenuItemClickListener(Toolbar.OnMenuItemClickListener {
+            when (it.itemId) {
                 R.id.download_music -> {
                     val intent = Intent(this@MainActivity, DownloadMusicActivity::class.java)
                     launcher.launch(intent);
@@ -63,10 +63,10 @@ class MainActivity : AppCompatActivity() {
         tabLayoutMediator.attach()
     }
 
-    val launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult(), ActivityResultCallback { result ->
-        if (result.resultCode == RESULT_OK) {
+    val launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult(), ActivityResultCallback {
+        if (it.resultCode == RESULT_OK) {
             val songsToDownload : Array<Parcelable> =
-                result.data?.extras?.getParcelableArray("songsToDownload") as Array<Parcelable>;
+                it.data?.extras?.getParcelableArray("songsToDownload") as Array<Parcelable>;
 
             viewModel.onDownload(songsToDownload);
         }

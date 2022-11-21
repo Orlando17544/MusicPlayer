@@ -30,11 +30,11 @@ class MainViewModel(val database: SongDatabaseDao,
             // Create a reference to a file from a Google Cloud Storage URI
             val gsReference = storage.getReferenceFromUrl(downloadableSongSelected.uri);
 
-            gsReference.downloadUrl.addOnSuccessListener { uri ->
+            gsReference.downloadUrl.addOnSuccessListener {
                 // Got the download URL for 'users/me/profile.png'
                 viewModelScope.launch {
                     try {
-                        val responseBody = Api.retrofitService.downloadFile(uri.toString()).body();
+                        val responseBody = Api.retrofitService.downloadFile(it.toString()).body();
                         val fileDirectory = generateDirectory(downloadableSongSelected);
                         val path = fileDirectory.absolutePath;
 
@@ -44,9 +44,9 @@ class MainViewModel(val database: SongDatabaseDao,
                         Log.e("error","Failure: ${e.message}");
                     }
                 }
-            }.addOnFailureListener { exception ->
+            }.addOnFailureListener {
                 // Handle any errors
-                Log.e("Error: ", exception.message as String)
+                Log.e("Error: ", it.message as String)
             }
         }
     }
@@ -65,13 +65,13 @@ class MainViewModel(val database: SongDatabaseDao,
             input = body!!.byteStream();
 
             val fos = FileOutputStream(pathWhereYouWantToSaveFile)
-            fos.use { output ->
+            fos.use {
                 val buffer = ByteArray(4 * 1024) // or other buffer size
                 var read: Int
                 while (input.read(buffer).also { read = it } != -1) {
-                    output.write(buffer, 0, read)
+                    it.write(buffer, 0, read)
                 }
-                output.flush()
+                it.flush()
             }
             Log.e("sucessssssssssss", "");
             return pathWhereYouWantToSaveFile

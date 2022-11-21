@@ -1,8 +1,19 @@
 package com.example.android.youtubemusicplayer.download_music
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import com.example.android.youtubemusicplayer.database.Song
+import com.example.android.youtubemusicplayer.database.SongDatabaseDao
 
-class DownloadMusicViewModel : ViewModel() {
+class DownloadMusicViewModel(val database: SongDatabaseDao,
+                             application: Application) : AndroidViewModel(application) {
+
+    val songs : LiveData<List<Song>> = database.getSongs();
+
+    val downloadableSongsSelected = mutableListOf<DownloadableSong>();
+
     val downloadableSongs = arrayOf(
         DownloadableSong("gs://musicplayer-2d048.appspot.com/01. Ariana Grande - Moonlight_sample.mp3", "Moonlight_sample", "Ariana Grande"),
         DownloadableSong("gs://musicplayer-2d048.appspot.com/01. Daft Punk - Give Life Back to Music_sample.mp3", "Give Life Back to Music_sample", "Daft Punk"),
@@ -232,6 +243,4 @@ class DownloadMusicViewModel : ViewModel() {
         DownloadableSong("gs://musicplayer-2d048.appspot.com/21. Wisin & Yandel; Tea Time - Rakata (hip hop remix)_sample.mp3", "Rakata (hip hop remix)_sample", "Wisin & Yandel; Tea Time"),
         DownloadableSong("gs://musicplayer-2d048.appspot.com/22. Wisin & Yandel - Llamé pa' verte (bailando sexy) (instrumental)_sample.mp3", "Llamé pa' verte (bailando sexy) (instrumental)_sample", "Wisin & Yandel"),
         );
-
-    val downloadableSongsSelected = mutableListOf<DownloadableSong>();
 }

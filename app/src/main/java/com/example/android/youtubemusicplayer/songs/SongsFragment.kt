@@ -39,12 +39,18 @@ class SongsFragment : Fragment() {
 
         val dataSource = SongDatabase.getInstance(application).songDatabaseDao;
 
-        val viewModelFactory = SongsViewModelFactory(dataSource, application)
+        val viewModelFactory = SongsViewModelFactory(dataSource, application);
 
         viewModel = ViewModelProvider(this, viewModelFactory)
             .get(SongsViewModel::class.java);
 
         val adapter = SongsAdapter();
+
+        viewModel.songs.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                adapter.data = it;
+            }
+        })
 
         adapter.onItemChange = { itemView: View, position: Int, positionSelected: Int ->
             if (positionSelected.equals(position)) {
@@ -57,12 +63,6 @@ class SongsFragment : Fragment() {
         }
 
         val recyclerView: RecyclerView = view.findViewById(R.id.songs);
-
-        viewModel.songs.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                adapter.data = it;
-            }
-        })
 
         recyclerView.adapter = adapter;
 

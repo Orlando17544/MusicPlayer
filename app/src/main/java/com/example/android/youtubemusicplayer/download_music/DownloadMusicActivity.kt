@@ -11,9 +11,15 @@ import android.widget.Button
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android.youtubemusicplayer.R
+import com.example.android.youtubemusicplayer.database.SongDatabase
+import com.example.android.youtubemusicplayer.songs.SongsAdapter
+import com.example.android.youtubemusicplayer.songs.SongsViewModel
+import com.example.android.youtubemusicplayer.songs.SongsViewModelFactory
 
 
 class DownloadMusicActivity : AppCompatActivity() {
@@ -33,12 +39,31 @@ class DownloadMusicActivity : AppCompatActivity() {
 
         verifyStoragePermissions(this);
 
-        viewModel = ViewModelProvider(this).get(DownloadMusicViewModel::class.java)
+        val application = requireNotNull(this).application;
+
+        val dataSource = SongDatabase.getInstance(application).songDatabaseDao;
+
+        val viewModelFactory = DownloadMusicViewModelFactory(dataSource, application)
+
+        viewModel = ViewModelProvider(this, viewModelFactory)
+            .get(DownloadMusicViewModel::class.java);
 
         val adapter = DownloadableSongsAdapter(viewModel.downloadableSongs, viewModel);
 
-        adapter.onItemChange = { itemView: View, position: Int, positionsSelected: List<Int> ->
-            if (positionsSelected.contains(position)) {
+        viewModel.songs.observe(this, Observer {
+            it?.let {
+                adapter.data = it;
+            }
+        })
+
+        //val adapter = DownloadableSongsAdapter(viewModel.downloadableSongs, viewModel);
+
+        adapter.onItemChange = { itemView: View, position: Int,
+                                 positionsSelected: List<Int>, positionsDownloaded: List<Int> ->
+            if (positionsDownloaded.contains(position)) {
+                itemView.setBackgroundColor(Color.parseColor("#004d40"));
+                itemView.findViewById<ImageView>(R.id.song_icon).setBackgroundColor(Color.parseColor("#004d40"));
+            } else if (positionsSelected.contains(position)) {
                 itemView.setBackgroundColor(Color.parseColor("#ecaf31"));
                 itemView.findViewById<ImageView>(R.id.song_icon).setBackgroundColor(Color.parseColor("#ecaf31"));
             } else {
