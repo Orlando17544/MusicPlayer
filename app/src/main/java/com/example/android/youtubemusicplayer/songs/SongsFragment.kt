@@ -7,6 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -62,6 +64,16 @@ class SongsFragment : Fragment() {
                 itemView.setBackgroundColor(Color.parseColor("#202755"));
                 itemView.findViewById<ImageView>(R.id.song_icon).setBackgroundColor(Color.parseColor("#373c66"));
             }
+        }
+
+        adapter.onItemSelected = { song: Song ->
+            val playerLinearLayout = activity?.findViewById<LinearLayout>(R.id.player_item);
+
+            val nameTextView = playerLinearLayout?.findViewById<TextView>(R.id.song_name);
+            val artistTextView = playerLinearLayout?.findViewById<TextView>(R.id.song_artist);
+
+            nameTextView?.text = song.name;
+            artistTextView?.text = song.artist;
         }
 
         val recyclerView: RecyclerView = view.findViewById(R.id.songs);

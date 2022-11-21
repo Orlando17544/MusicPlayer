@@ -21,6 +21,7 @@ class SongsAdapter : RecyclerView.Adapter<SongsAdapter.SongsViewHolder>() {
             notifyDataSetChanged()
         }
     lateinit var onItemChange: ((View, Int, Int) -> Unit);
+    lateinit var onItemSelected: ((Song) -> Unit);
     var positionSelected = -1;
 
     val musicPlayer = MusicPlayer();
@@ -54,6 +55,8 @@ class SongsAdapter : RecyclerView.Adapter<SongsAdapter.SongsViewHolder>() {
                 positionSelected = position;
 
                 musicPlayer.playSong(item);
+
+                onItemSelected?.invoke(item);
             }
 
             notifyDataSetChanged();
