@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android.youtubemusicplayer.R
 import com.example.android.youtubemusicplayer.database.Song
+import kotlin.properties.Delegates
 
 class SongsAdapter : RecyclerView.Adapter<SongsAdapter.SongsViewHolder>() {
 
@@ -19,7 +20,7 @@ class SongsAdapter : RecyclerView.Adapter<SongsAdapter.SongsViewHolder>() {
             notifyDataSetChanged()
         }
     lateinit var onItemChange: ((View, Int, Int) -> Unit);
-    val positionSelected = -1;
+    var positionSelected = -1;
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SongsViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
@@ -38,6 +39,18 @@ class SongsAdapter : RecyclerView.Adapter<SongsAdapter.SongsViewHolder>() {
         } else {
             holder.itemView.findViewById<TextView>(R.id.song_name).text = item?.name;
         }
+
+        holder.itemView.setOnClickListener(View.OnClickListener {
+            if (positionSelected.equals(position)) {
+                positionSelected = -1;
+                //viewModel.downloadableSongsSelected.add(item);
+            } else {
+                positionSelected = position;
+                //viewModel.downloadableSongsSelected.add(item);
+            }
+
+            notifyDataSetChanged();
+        })
 
         onItemChange?.invoke(holder.itemView, position, positionSelected);
     }
