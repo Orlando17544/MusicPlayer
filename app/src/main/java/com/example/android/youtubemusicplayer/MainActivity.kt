@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
+import com.example.android.youtubemusicplayer.database.SongDatabase
 import com.example.android.youtubemusicplayer.download_music.DownloadMusicActivity
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.tabs.TabLayout
@@ -16,13 +17,19 @@ import com.google.android.material.tabs.TabLayoutMediator
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var viewModel: MainActivityViewModel
+    private lateinit var viewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        viewModel = ViewModelProvider(this).get(MainActivityViewModel::class.java)
+        val dataSource = SongDatabase.getInstance(application).songDatabaseDao;
+        val viewModelFactory = MainViewModelFactory(dataSource, application)
+
+        // Get a reference to the ViewModel associated with this fragment.
+        viewModel =
+            ViewModelProvider(
+                this, viewModelFactory).get(MainViewModel::class.java)
 
         val topAppBar = findViewById<MaterialToolbar>(R.id.topAppBar)
 
@@ -61,7 +68,7 @@ class MainActivity : AppCompatActivity() {
             val songsToDownload : Array<Parcelable> =
                 result.data?.extras?.getParcelableArray("songsToDownload") as Array<Parcelable>;
 
-            viewModel.downloadMusicFiles(songsToDownload);
+            viewModel.onDownload(songsToDownload);
         }
     })
 

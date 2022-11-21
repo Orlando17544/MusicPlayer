@@ -11,7 +11,7 @@ import com.example.android.youtubemusicplayer.database.SongDatabaseDao
 class SongsViewModel(val database: SongDatabaseDao,
                      application: Application) : AndroidViewModel(application) {
 
-    val songs = database.getSongs();
+    val songs : LiveData<List<Song>> = database.getSongs();
     //private var songs: LiveData<List<Song>>? = null;
     //private var songs = MutableLiveData<Song?>()
 

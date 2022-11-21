@@ -7,9 +7,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android.youtubemusicplayer.R
+import com.example.android.youtubemusicplayer.database.Song
 import com.example.android.youtubemusicplayer.database.SongDatabase
 
 // TODO: Rename parameter arguments, choose names that match
@@ -41,11 +43,8 @@ class SongsFragment : Fragment() {
 
         viewModel = ViewModelProvider(this, viewModelFactory)
             .get(SongsViewModel::class.java);
-/*
-        val songsViewModel = ViewModelProvider(this, viewModelFactory)
-            .get(SongsViewModel::class.java)
 
-        val adapter = SongsAdapter(viewModel.database.getSongs(), viewModel);
+        val adapter = SongsAdapter();
 
         adapter.onItemChange = { itemView: View, position: Int, positionSelected: Int ->
             if (positionSelected.equals(position)) {
@@ -59,9 +58,15 @@ class SongsFragment : Fragment() {
 
         val recyclerView: RecyclerView = view.findViewById(R.id.songs);
 
+        viewModel.songs.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                adapter.data = it;
+            }
+        })
+
         recyclerView.adapter = adapter;
 
-        // Inflate the layout for this fragment*/
+        // Inflate the layout for this fragment
         return view;
     }
 }

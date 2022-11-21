@@ -7,6 +7,8 @@ import android.os.Parcelable
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.android.youtubemusicplayer.database.Song
+import com.example.android.youtubemusicplayer.database.SongDatabaseDao
 import com.example.android.youtubemusicplayer.download_music.DownloadableSong
 import com.example.android.youtubemusicplayer.network.Api
 import com.google.firebase.ktx.Firebase
@@ -17,15 +19,11 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
 
-class MainActivityViewModel(application: Application) : AndroidViewModel(application) {
-    fun downloadMusicFiles(downloadableSongsSelectedParcelable: Array<Parcelable>) {
+class MainViewModel(val database: SongDatabaseDao,
+                    application: Application) : AndroidViewModel(application) {
+    fun onDownload(downloadableSongsSelectedParcelable: Array<Parcelable>) {
 
-        val downloadableSongsSelected = mutableListOf<DownloadableSong>();
-
-        for (downloadableSongSelectedParcelable in downloadableSongsSelectedParcelable) {
-            downloadableSongsSelected.add(downloadableSongSelectedParcelable as DownloadableSong);
-        }
-
+        val downloadableSongsSelected = convertToDownloadableSong(downloadableSongsSelectedParcelable);
         val storage = Firebase.storage
 
         for (downloadableSongSelected in downloadableSongsSelected) {
@@ -36,14 +34,12 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
                 // Got the download URL for 'users/me/profile.png'
                 viewModelScope.launch {
                     try {
-                        val cw = ContextWrapper(getApplication<Application?>().applicationContext)
-                        // path to /data/data/yourapp/app_data/songs
-                        val directory = cw.getDir("songs", Context.MODE_PRIVATE)
-                        val mypath = File(directory, downloadableSongSelected.name + ".mp3")
-
                         val responseBody = Api.retrofitService.downloadFile(uri.toString()).body();
-                        val result = saveFile(responseBody, mypath.absolutePath)
-                        Log.e("Ruta: ", result);
+                        val fileDirectory = generateDirectory(downloadableSongSelected);
+                        val path = fileDirectory.absolutePath;
+
+                        val result = saveFile(responseBody, path);
+                        insert(downloadableSongSelected, path);
                     } catch (e: Exception) {
                         Log.e("error","Failure: ${e.message}");
                     }
@@ -55,13 +51,19 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
         }
     }
 
+    suspend fun generateDirectory(downloadableSongSelected: DownloadableSong): File {
+        val cw = ContextWrapper(getApplication<Application?>().applicationContext)
+        // path to /data/data/yourapp/app_data/songs
+        val directory = cw.getDir("songs", Context.MODE_PRIVATE)
+        return File(directory, downloadableSongSelected.name + ".mp3")
+    }
+
     suspend fun saveFile(body: ResponseBody?, pathWhereYouWantToSaveFile: String) : String {
-        if (body==null)
-            return ""
-        var input: InputStream? = null
+        if (body != null) body else ""
+        lateinit var input: InputStream
         try {
-            input = body.byteStream()
-            //val file = File(getCacheDir(), "cacheFileAppeal.srl")
+            input = body!!.byteStream();
+
             val fos = FileOutputStream(pathWhereYouWantToSaveFile)
             fos.use { output ->
                 val buffer = ByteArray(4 * 1024) // or other buffer size
@@ -80,5 +82,25 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
             input?.close()
         }
         return ""
+    }
+
+    private suspend fun insert(downloadableSong: DownloadableSong, path: String) {
+        lateinit var newSong: Song;
+
+        newSong = Song();
+        newSong.path = path;
+        newSong.name = downloadableSong.name;
+        newSong.artist = downloadableSong.artist;
+
+        database.insert(newSong);
+    }
+
+    private fun convertToDownloadableSong(downloadableSongsSelectedParcelable: Array<Parcelable>): MutableList<DownloadableSong> {
+        var downloadableSongsSelected = mutableListOf<DownloadableSong>()
+
+        for (downloadableSongSelectedParcelable in downloadableSongsSelectedParcelable) {
+            downloadableSongsSelected.add(downloadableSongSelectedParcelable as DownloadableSong);
+        }
+        return downloadableSongsSelected;
     }
 }

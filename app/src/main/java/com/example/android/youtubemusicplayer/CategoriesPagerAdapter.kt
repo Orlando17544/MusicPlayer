@@ -24,6 +24,6 @@ class CategoriesPagerAdapter(fragmentActivity: FragmentActivity) : FragmentState
             4 -> fragment = GendersFragment()
         }
 
-        return fragment!!
+        return if (fragment != null) fragment else Fragment();
     }
 }

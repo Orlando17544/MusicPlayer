@@ -11,7 +11,7 @@ import com.example.android.youtubemusicplayer.R
 
 class DownloadableSongsAdapter(val data: Array<DownloadableSong>, val activityViewModel: ViewModel) : RecyclerView.Adapter<DownloadableSongsAdapter.DownloadableSongsViewHolder>() {
 
-    var onItemChange: ((View, Int, List<Int>) -> Unit)? = null
+    lateinit var onItemChange: ((View, Int, List<Int>) -> Unit);
     val positionsSelected = mutableListOf<Int>();
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DownloadableSongsViewHolder {

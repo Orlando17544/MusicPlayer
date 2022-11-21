@@ -11,9 +11,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.android.youtubemusicplayer.R
 import com.example.android.youtubemusicplayer.database.Song
 
-class SongsAdapter(val data: LiveData<List<Song>>, val activityViewModel: ViewModel) : RecyclerView.Adapter<SongsAdapter.SongsViewHolder>() {
+class SongsAdapter : RecyclerView.Adapter<SongsAdapter.SongsViewHolder>() {
 
-    var onItemChange: ((View, Int, Int) -> Unit)? = null
+    var data: List<Song> = listOf<Song>()
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
+    lateinit var onItemChange: ((View, Int, Int) -> Unit);
     val positionSelected = -1;
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SongsViewHolder {
@@ -24,21 +29,21 @@ class SongsAdapter(val data: LiveData<List<Song>>, val activityViewModel: ViewMo
     }
 
     override fun onBindViewHolder(holder: SongsViewHolder, position: Int) {
-        val item = data.value?.get(position);
+        val item = data.get(position);
 
         holder.itemView.findViewById<TextView>(R.id.song_artist).text = item?.artist;
 
-        if (item?.name?.length!! > 20) {
-            holder.itemView.findViewById<TextView>(R.id.song_name).text = item.name.substring(0, 20) + "...";
+        if (item?.name?.length ?: 0 > 20) {
+            holder.itemView.findViewById<TextView>(R.id.song_name).text = item?.name?.substring(0, 20) + "...";
         } else {
-            holder.itemView.findViewById<TextView>(R.id.song_name).text = item.name;
+            holder.itemView.findViewById<TextView>(R.id.song_name).text = item?.name;
         }
 
         onItemChange?.invoke(holder.itemView, position, positionSelected);
     }
 
     override fun getItemCount(): Int {
-        return data.value!!.size;
+        return data.size;
     }
 
     class SongsViewHolder(linearLayout: LinearLayout): RecyclerView.ViewHolder(linearLayout) {

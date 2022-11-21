@@ -66,13 +66,13 @@ class DownloadMusicActivity : AppCompatActivity() {
     fun verifyStoragePermissions(activity: Activity?) {
         // Check if we have write permission
         val permission = ActivityCompat.checkSelfPermission(
-            activity!!,
+            if (activity != null) activity else Activity(),
             Manifest.permission.WRITE_EXTERNAL_STORAGE
         )
         if (permission != PackageManager.PERMISSION_GRANTED) {
             // We don't have permission so prompt the user
             ActivityCompat.requestPermissions(
-                activity,
+                if (activity != null) activity else Activity(),
                 PERMISSIONS_STORAGE,
                 REQUEST_EXTERNAL_STORAGE
             )
