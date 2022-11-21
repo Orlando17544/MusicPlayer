@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.RecyclerView
+import com.example.android.youtubemusicplayer.MusicPlayer
 import com.example.android.youtubemusicplayer.R
 import com.example.android.youtubemusicplayer.database.Song
 import kotlin.properties.Delegates
@@ -21,6 +22,8 @@ class SongsAdapter : RecyclerView.Adapter<SongsAdapter.SongsViewHolder>() {
         }
     lateinit var onItemChange: ((View, Int, Int) -> Unit);
     var positionSelected = -1;
+
+    val musicPlayer = MusicPlayer();
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SongsViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
@@ -40,13 +43,17 @@ class SongsAdapter : RecyclerView.Adapter<SongsAdapter.SongsViewHolder>() {
             holder.itemView.findViewById<TextView>(R.id.song_name).text = item?.name;
         }
 
-        holder.itemView.setOnClickListener(View.OnClickListener {
+        holder.itemView.findViewById<LinearLayout>(R.id.clickable_song)
+            .setOnClickListener(View.OnClickListener {
+
             if (positionSelected.equals(position)) {
                 positionSelected = -1;
-                //viewModel.downloadableSongsSelected.add(item);
+
+                musicPlayer.pauseSong();
             } else {
                 positionSelected = position;
-                //viewModel.downloadableSongsSelected.add(item);
+
+                musicPlayer.playSong(item);
             }
 
             notifyDataSetChanged();
