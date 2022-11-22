@@ -5,23 +5,22 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.android.youtubemusicplayer.MusicPlayer
 import com.example.android.youtubemusicplayer.R
 import com.example.android.youtubemusicplayer.database.Song
-import kotlin.properties.Delegates
 
-class SongsAdapter : RecyclerView.Adapter<SongsAdapter.SongsViewHolder>() {
-
+class SongsAdapter : ListAdapter<Song, SongsAdapter.SongsViewHolder>(SongsDiffCallback()) {
+    /*
     var data: List<Song> = listOf<Song>()
         set(value) {
             field = value
             notifyDataSetChanged()
-        }
+        }*/
     lateinit var onItemChange: ((View, Int, Int) -> Unit);
     lateinit var onItemSelected: ((Song) -> Unit);
+    lateinit var onItemDeselected: (() -> Unit);
     var positionSelected = -1;
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SongsViewHolder {
@@ -32,7 +31,8 @@ class SongsAdapter : RecyclerView.Adapter<SongsAdapter.SongsViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: SongsViewHolder, position: Int) {
-        val item = data.get(position);
+        //val item = data.get(position);
+        val item = getItem(position);
 
         holder.itemView.findViewById<TextView>(R.id.song_artist).text = item?.artist;
 
@@ -48,11 +48,9 @@ class SongsAdapter : RecyclerView.Adapter<SongsAdapter.SongsViewHolder>() {
             if (positionSelected.equals(position)) {
                 positionSelected = -1;
 
-                MusicPlayer.pauseSong();
+                onItemDeselected?.invoke();
             } else {
                 positionSelected = position;
-
-                MusicPlayer.playSong(item);
 
                 onItemSelected?.invoke(item);
             }
@@ -62,10 +60,10 @@ class SongsAdapter : RecyclerView.Adapter<SongsAdapter.SongsViewHolder>() {
 
         onItemChange?.invoke(holder.itemView, position, positionSelected);
     }
-
+    /*
     override fun getItemCount(): Int {
         return data.size;
-    }
+    }*/
 
     class SongsViewHolder(linearLayout: LinearLayout): RecyclerView.ViewHolder(linearLayout) {
         var songName: TextView;
@@ -75,5 +73,15 @@ class SongsAdapter : RecyclerView.Adapter<SongsAdapter.SongsViewHolder>() {
             songName = linearLayout.findViewById(R.id.song_name);
             songArtist = linearLayout.findViewById(R.id.song_artist);
         }
+    }
+}
+
+class SongsDiffCallback : DiffUtil.ItemCallback<Song>() {
+    override fun areItemsTheSame(oldItem: Song, newItem: Song): Boolean {
+        return oldItem.id == newItem.id;
+    }
+
+    override fun areContentsTheSame(oldItem: Song, newItem: Song): Boolean {
+        return oldItem == newItem;
     }
 }

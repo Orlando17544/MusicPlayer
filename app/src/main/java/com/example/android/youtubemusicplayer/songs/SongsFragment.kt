@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
+import com.example.android.youtubemusicplayer.MusicPlayer
 import com.example.android.youtubemusicplayer.R
 import com.example.android.youtubemusicplayer.database.Song
 import com.example.android.youtubemusicplayer.database.SongDatabase
@@ -52,7 +53,8 @@ class SongsFragment : Fragment() {
 
         viewModel.songs.observe(viewLifecycleOwner, Observer {
             it?.let {
-                adapter.data = it;
+                //adapter.data = it;
+                adapter.submitList(it);
             }
         })
 
@@ -67,6 +69,8 @@ class SongsFragment : Fragment() {
         }
 
         adapter.onItemSelected = { song: Song ->
+            MusicPlayer.playSong(song);
+
             val playerLinearLayout = activity?.findViewById<LinearLayout>(R.id.player_item);
 
             val nameTextView = playerLinearLayout?.findViewById<TextView>(R.id.song_name);
@@ -74,6 +78,10 @@ class SongsFragment : Fragment() {
 
             nameTextView?.text = song.name;
             artistTextView?.text = song.artist;
+        }
+
+        adapter.onItemDeselected = {
+            MusicPlayer.pauseSong();
         }
 
         val recyclerView: RecyclerView = view.findViewById(R.id.songs);
