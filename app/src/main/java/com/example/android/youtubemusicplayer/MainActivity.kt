@@ -69,8 +69,11 @@ class MainActivity : AppCompatActivity() {
         val playerLinearLayout = findViewById<LinearLayout>(R.id.player_item);
 
         playerLinearLayout.setOnClickListener(View.OnClickListener {
-            val fragment: SongsFragment =
-                FragmentActivity().supportFragmentManager.fragments.get(0) as SongsFragment;
+            if (MusicPlayer.paused) {
+                MusicPlayer.playSong();
+            } else {
+                MusicPlayer.pauseSong();
+            }
         })
     }
 

@@ -24,8 +24,6 @@ class SongsAdapter : RecyclerView.Adapter<SongsAdapter.SongsViewHolder>() {
     lateinit var onItemSelected: ((Song) -> Unit);
     var positionSelected = -1;
 
-    val musicPlayer = MusicPlayer();
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SongsViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         val view = layoutInflater.inflate(R.layout.song_item, parent, false) as LinearLayout
@@ -50,11 +48,11 @@ class SongsAdapter : RecyclerView.Adapter<SongsAdapter.SongsViewHolder>() {
             if (positionSelected.equals(position)) {
                 positionSelected = -1;
 
-                musicPlayer.pauseSong();
+                MusicPlayer.pauseSong();
             } else {
                 positionSelected = position;
 
-                musicPlayer.playSong(item);
+                MusicPlayer.playSong(item);
 
                 onItemSelected?.invoke(item);
             }

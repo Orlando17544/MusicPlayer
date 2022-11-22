@@ -3,9 +3,11 @@ package com.example.android.youtubemusicplayer
 import android.media.MediaPlayer
 import com.example.android.youtubemusicplayer.database.Song
 
-class MusicPlayer {
-    var mediaplayer = MediaPlayer();
-    lateinit var currentSong: Song;
+object MusicPlayer {
+    private var mediaplayer = MediaPlayer();
+    private lateinit var currentSong: Song;
+
+    var paused = true;
 
     private fun prepareSong(song: Song) {
         currentSong = song;
@@ -23,20 +25,19 @@ class MusicPlayer {
         mediaplayer.stop();
     }
 
-    fun playSong(song: Song) {
+    fun playSong(song: Song = currentSong) {
         if (!::currentSong.isInitialized) {
             prepareSong(song);
-            startSong();
-        } else if (currentSong.equals(song)) {
-            startSong();
-        } else {
+        } else if (!currentSong.equals(song)) {
             stopSong();
             prepareSong(song);
-            startSong();
         }
+        startSong();
+        paused = false;
     }
 
     fun pauseSong() {
         mediaplayer.pause();
+        paused = true;
     }
 }
