@@ -15,6 +15,8 @@ import com.example.android.youtubemusicplayer.network.Api
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import okhttp3.ResponseBody
 import java.io.File
 import java.io.FileOutputStream
@@ -85,20 +87,28 @@ class MainViewModel(val database: MusicDatabaseDao,
         return ""
     }
 
+    val mutex = Mutex()
+
     private suspend fun insert(downloadableSong: DownloadableSong, path: String) {
-        lateinit var newSong: Song;
-        lateinit var newPlaylist: Playlist;
+        mutex.withLock {
+            lateinit var newSong: Song;
 
-        newPlaylist = Playlist();
+            newSong = Song();
+            newSong.path = path;
+            newSong.name = downloadableSong.name;
+            newSong.artist = downloadableSong.artist;
+            newSong.playlistContainerId = 1;
 
-        newSong = Song();
-        newSong.path = path;
-        newSong.name = downloadableSong.name;
-        newSong.artist = downloadableSong.artist;
-        newSong.playlistContainerId = newPlaylist.playlistId;
+            if (database.getPlaylists().size.equals(0)) {
+                var newPlaylist = Playlist();
 
-        database.insertSong(newSong);
-        database.insertPlaylist(newPlaylist);
+                newPlaylist.name = "-";
+
+                database.insertPlaylist(newPlaylist);
+            }
+
+            database.insertSong(newSong);
+        }
     }
 
     private fun convertToDownloadableSong(downloadableSongsSelectedParcelable: Array<Parcelable>): MutableList<DownloadableSong> {

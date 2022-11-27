@@ -18,5 +18,6 @@ data class Song (
     @ColumnInfo(name = "artist")
     var artist: String = "",
 
+    @ColumnInfo(name = "playlistContainerId")
     var playlistContainerId: Int = 0
 )

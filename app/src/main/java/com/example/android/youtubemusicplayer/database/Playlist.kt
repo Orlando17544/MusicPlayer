@@ -8,5 +8,5 @@ data class Playlist (
     @PrimaryKey(autoGenerate = true)
     val playlistId: Int = 0,
 
-    val name: String = ""
+    var name: String = ""
 )

@@ -28,6 +28,7 @@ class PlaylistsAdapter: ListAdapter<PlaylistWithSongs, PlaylistsAdapter.Playlist
         val item = getItem(position);
 
         holder.itemView.findViewById<TextView>(R.id.playlist_name).text = item?.playlist?.name;
+        holder.itemView.findViewById<TextView>(R.id.number_songs_playlist).text = item?.songs?.size.toString();
 
         if (item?.playlist?.name?.length ?: 0 > 20) {
             holder.itemView.findViewById<TextView>(R.id.playlist_name).text = item?.playlist?.name?.substring(0, 20) + "...";

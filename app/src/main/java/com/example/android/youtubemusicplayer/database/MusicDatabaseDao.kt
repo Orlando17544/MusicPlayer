@@ -26,6 +26,9 @@ interface MusicDatabaseDao {
     @Delete
     suspend fun deletePlaylist(playlist: Playlist)
 
+    @Query("SELECT * from playlists_table")
+    suspend fun getPlaylists(): List<Playlist>
+
     @Transaction
     @Query("SELECT * FROM playlists_table")
     fun getPlaylistsWithSongs(): LiveData<List<PlaylistWithSongs>>
