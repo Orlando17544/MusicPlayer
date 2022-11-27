@@ -4,13 +4,13 @@
     android:layout_height="80dp"
     android:layout_weight="1"
     android:orientation="horizontal"
-    android:background="#202755">
+    android:background="#5f3d60">
 
     <ImageView
         android:id="@+id/song_icon"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:background="#373c66"
+        android:background="#665172"
         android:src="@drawable/ic_baseline_music_note_24"
         android:layout_gravity="center_vertical"/>
 
@@ -26,7 +26,6 @@
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_weight="0.5"
-            android:text="name"
             android:textColor="#f2f8f9"/>
 
         <TextView
@@ -34,7 +33,6 @@
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_weight="0.5"
-            android:text="artist"
             android:textColor="#C0C5DA"/>
 
     </LinearLayout>
@@ -44,7 +42,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="0.1"
-        android:src="@drawable/ic_baseline_more_vert_24"
+        android:src="@drawable/ic_baseline_play_arrow_24"
         android:layout_gravity="center_vertical"/>
 
 </LinearLayout>

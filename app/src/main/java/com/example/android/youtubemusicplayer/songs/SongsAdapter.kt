@@ -12,12 +12,7 @@ import com.example.android.youtubemusicplayer.R
 import com.example.android.youtubemusicplayer.database.Song
 
 class SongsAdapter : ListAdapter<Song, SongsAdapter.SongsViewHolder>(SongsDiffCallback()) {
-    /*
-    var data: List<Song> = listOf<Song>()
-        set(value) {
-            field = value
-            notifyDataSetChanged()
-        }*/
+
     lateinit var onItemChange: ((View, Int, Int) -> Unit);
     lateinit var onItemSelected: ((Song) -> Unit);
     lateinit var onItemDeselected: (() -> Unit);
@@ -31,7 +26,6 @@ class SongsAdapter : ListAdapter<Song, SongsAdapter.SongsViewHolder>(SongsDiffCa
     }
 
     override fun onBindViewHolder(holder: SongsViewHolder, position: Int) {
-        //val item = data.get(position);
         val item = getItem(position);
 
         holder.itemView.findViewById<TextView>(R.id.song_artist).text = item?.artist;
@@ -60,10 +54,6 @@ class SongsAdapter : ListAdapter<Song, SongsAdapter.SongsViewHolder>(SongsDiffCa
 
         onItemChange?.invoke(holder.itemView, position, positionSelected);
     }
-    /*
-    override fun getItemCount(): Int {
-        return data.size;
-    }*/
 
     class SongsViewHolder(linearLayout: LinearLayout): RecyclerView.ViewHolder(linearLayout) {
         var songName: TextView;
@@ -78,7 +68,7 @@ class SongsAdapter : ListAdapter<Song, SongsAdapter.SongsViewHolder>(SongsDiffCa
 
 class SongsDiffCallback : DiffUtil.ItemCallback<Song>() {
     override fun areItemsTheSame(oldItem: Song, newItem: Song): Boolean {
-        return oldItem.id == newItem.id;
+        return oldItem.songId == newItem.songId;
     }
 
     override fun areContentsTheSame(oldItem: Song, newItem: Song): Boolean {

@@ -8,7 +8,8 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.android.youtubemusicplayer.database.Song
-import com.example.android.youtubemusicplayer.database.SongDatabaseDao
+import com.example.android.youtubemusicplayer.database.MusicDatabaseDao
+import com.example.android.youtubemusicplayer.database.Playlist
 import com.example.android.youtubemusicplayer.download_music.DownloadableSong
 import com.example.android.youtubemusicplayer.network.Api
 import com.google.firebase.ktx.Firebase
@@ -19,7 +20,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
 
-class MainViewModel(val database: SongDatabaseDao,
+class MainViewModel(val database: MusicDatabaseDao,
                     application: Application) : AndroidViewModel(application) {
     fun onDownload(downloadableSongsSelectedParcelable: Array<Parcelable>) {
 
@@ -86,13 +87,18 @@ class MainViewModel(val database: SongDatabaseDao,
 
     private suspend fun insert(downloadableSong: DownloadableSong, path: String) {
         lateinit var newSong: Song;
+        lateinit var newPlaylist: Playlist;
+
+        newPlaylist = Playlist();
 
         newSong = Song();
         newSong.path = path;
         newSong.name = downloadableSong.name;
         newSong.artist = downloadableSong.artist;
+        newSong.playlistContainerId = newPlaylist.playlistId;
 
-        database.insert(newSong);
+        database.insertSong(newSong);
+        database.insertPlaylist(newPlaylist);
     }
 
     private fun convertToDownloadableSong(downloadableSongsSelectedParcelable: Array<Parcelable>): MutableList<DownloadableSong> {

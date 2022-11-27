@@ -16,19 +16,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.android.youtubemusicplayer.MusicPlayer
 import com.example.android.youtubemusicplayer.R
 import com.example.android.youtubemusicplayer.database.Song
-import com.example.android.youtubemusicplayer.database.SongDatabase
+import com.example.android.youtubemusicplayer.database.MusicDatabase
 
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [SongsFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class SongsFragment : Fragment() {
 
     private lateinit var viewModel: SongsViewModel
@@ -42,7 +31,7 @@ class SongsFragment : Fragment() {
 
         val application = requireNotNull(this.activity).application;
 
-        val dataSource = SongDatabase.getInstance(application).songDatabaseDao;
+        val dataSource = MusicDatabase.getInstance(application).musicDatabaseDao;
 
         val viewModelFactory = SongsViewModelFactory(dataSource, application);
 
@@ -53,7 +42,6 @@ class SongsFragment : Fragment() {
 
         viewModel.songs.observe(viewLifecycleOwner, Observer {
             it?.let {
-                //adapter.data = it;
                 adapter.submitList(it);
             }
         })

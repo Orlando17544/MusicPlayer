@@ -16,7 +16,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android.youtubemusicplayer.R
-import com.example.android.youtubemusicplayer.database.SongDatabase
+import com.example.android.youtubemusicplayer.database.MusicDatabase
 import com.example.android.youtubemusicplayer.songs.SongsAdapter
 import com.example.android.youtubemusicplayer.songs.SongsViewModel
 import com.example.android.youtubemusicplayer.songs.SongsViewModelFactory
@@ -41,7 +41,7 @@ class DownloadMusicActivity : AppCompatActivity() {
 
         val application = requireNotNull(this).application;
 
-        val dataSource = SongDatabase.getInstance(application).songDatabaseDao;
+        val dataSource = MusicDatabase.getInstance(application).musicDatabaseDao;
 
         val viewModelFactory = DownloadMusicViewModelFactory(dataSource, application)
 

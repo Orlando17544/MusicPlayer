@@ -5,23 +5,23 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [Song::class], version = 1, exportSchema = false)
-abstract class SongDatabase : RoomDatabase() {
-    abstract val songDatabaseDao: SongDatabaseDao
+@Database(entities = [Song::class, Playlist::class], version = 1, exportSchema = false)
+abstract class MusicDatabase : RoomDatabase() {
+    abstract val musicDatabaseDao: MusicDatabaseDao
 
     companion object {
         @Volatile
-        private var INSTANCE: SongDatabase? = null
+        private var INSTANCE: MusicDatabase? = null
 
-        fun getInstance(context: Context): SongDatabase {
+        fun getInstance(context: Context): MusicDatabase {
             synchronized(this) {
                 var instance = INSTANCE
 
                 if (instance == null) {
                     instance = Room.databaseBuilder(
                         context.applicationContext,
-                        SongDatabase::class.java,
-                        "songs_database")
+                        MusicDatabase::class.java,
+                        "music_database")
                         .fallbackToDestructiveMigration()
                         .build();
 

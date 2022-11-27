@@ -3,9 +3,9 @@ package com.example.android.youtubemusicplayer.songs
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.android.youtubemusicplayer.database.SongDatabaseDao
+import com.example.android.youtubemusicplayer.database.MusicDatabaseDao
 
-class SongsViewModelFactory(private val dataSource: SongDatabaseDao,
+class SongsViewModelFactory(private val dataSource: MusicDatabaseDao,
                             private val application: Application) : ViewModelProvider.Factory {
 
     @Suppress("unchecked_cast")

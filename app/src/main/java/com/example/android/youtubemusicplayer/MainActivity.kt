@@ -12,7 +12,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
-import com.example.android.youtubemusicplayer.database.SongDatabase
+import com.example.android.youtubemusicplayer.database.MusicDatabase
 import com.example.android.youtubemusicplayer.download_music.DownloadMusicActivity
 import com.example.android.youtubemusicplayer.songs.SongsFragment
 import com.google.android.material.appbar.MaterialToolbar
@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val dataSource = SongDatabase.getInstance(application).songDatabaseDao;
+        val dataSource = MusicDatabase.getInstance(application).musicDatabaseDao;
         val viewModelFactory = MainViewModelFactory(dataSource, application)
 
         // Get a reference to the ViewModel associated with this fragment.

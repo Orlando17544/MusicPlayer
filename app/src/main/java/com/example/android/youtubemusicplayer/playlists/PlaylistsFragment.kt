@@ -5,19 +5,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
 import com.example.android.youtubemusicplayer.R
+import com.example.android.youtubemusicplayer.database.MusicDatabase
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [PlaylistFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class PlaylistFragment : Fragment() {
 
     private lateinit var viewModel: PlaylistsViewModel
@@ -28,7 +21,30 @@ class PlaylistFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
 
-        val view = inflater.inflate(R.layout.fragment_playlist, container, false)
+
+        val view = inflater.inflate(R.layout.fragment_playlist, container, false);
+
+        val application = requireNotNull(this.activity).application;
+
+        val dataSource = MusicDatabase.getInstance(application).musicDatabaseDao;
+
+        val viewModelFactory = PlaylistsViewModelFactory(dataSource, application);
+
+        viewModel = ViewModelProvider(this, viewModelFactory)
+            .get(PlaylistsViewModel::class.java);
+
+        val adapter = PlaylistsAdapter();
+
+        viewModel.playlistWithSongs.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                adapter.submitList(it);
+                print("Cambio: " + it.size);
+            }
+        })
+
+        val recyclerView: RecyclerView = view.findViewById(R.id.playlists);
+
+        recyclerView.adapter = adapter;
 
         viewModel = ViewModelProvider(this).get(PlaylistsViewModel::class.java)
 
