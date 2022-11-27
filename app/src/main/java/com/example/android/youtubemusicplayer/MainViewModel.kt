@@ -93,19 +93,21 @@ class MainViewModel(val database: MusicDatabaseDao,
         mutex.withLock {
             lateinit var newSong: Song;
 
-            newSong = Song();
-            newSong.path = path;
-            newSong.name = downloadableSong.name;
-            newSong.artist = downloadableSong.artist;
-            newSong.playlistContainerId = 1;
+            val defaultPlaylist = database.getPlaylistByName("-");
 
-            if (database.getPlaylists().size.equals(0)) {
+            if (defaultPlaylist == null) {
                 var newPlaylist = Playlist();
 
                 newPlaylist.name = "-";
 
                 database.insertPlaylist(newPlaylist);
             }
+
+            newSong = Song();
+            newSong.path = path;
+            newSong.name = downloadableSong.name;
+            newSong.artist = downloadableSong.artist;
+            newSong.playlistContainerId = defaultPlaylist.playlistId;
 
             database.insertSong(newSong);
         }

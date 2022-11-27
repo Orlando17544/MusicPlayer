@@ -14,7 +14,7 @@ interface MusicDatabaseDao {
     @Delete
     suspend fun deleteSong(song: Song)
 
-    @Query("SELECT * from songs_table")
+    @Query("SELECT * FROM songs_table")
     fun getSongs(): LiveData<List<Song>>
 
     @Insert
@@ -26,8 +26,11 @@ interface MusicDatabaseDao {
     @Delete
     suspend fun deletePlaylist(playlist: Playlist)
 
-    @Query("SELECT * from playlists_table")
+    @Query("SELECT * FROM playlists_table")
     suspend fun getPlaylists(): List<Playlist>
+
+    @Query("SELECT * FROM playlists_table WHERE name = :name")
+    suspend fun getPlaylistByName(name: String): Playlist
 
     @Transaction
     @Query("SELECT * FROM playlists_table")
