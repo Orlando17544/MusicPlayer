@@ -87,30 +87,16 @@ class MainViewModel(val database: MusicDatabaseDao,
         return ""
     }
 
-    val mutex = Mutex()
-
     private suspend fun insert(downloadableSong: DownloadableSong, path: String) {
-        mutex.withLock {
-            lateinit var newSong: Song;
+        lateinit var newSong: Song;
 
-            val defaultPlaylist = database.getPlaylistByName("-");
+        newSong = Song();
+        newSong.path = path;
+        newSong.name = downloadableSong.name;
+        newSong.artist = downloadableSong.artist;
+        newSong.playlistContainerId = 0;
 
-            if (defaultPlaylist == null) {
-                var newPlaylist = Playlist();
-
-                newPlaylist.name = "-";
-
-                database.insertPlaylist(newPlaylist);
-            }
-
-            newSong = Song();
-            newSong.path = path;
-            newSong.name = downloadableSong.name;
-            newSong.artist = downloadableSong.artist;
-            newSong.playlistContainerId = defaultPlaylist.playlistId;
-
-            database.insertSong(newSong);
-        }
+        database.insertSong(newSong);
     }
 
     private fun convertToDownloadableSong(downloadableSongsSelectedParcelable: Array<Parcelable>): MutableList<DownloadableSong> {

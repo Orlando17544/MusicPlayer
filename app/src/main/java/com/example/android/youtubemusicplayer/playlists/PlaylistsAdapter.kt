@@ -3,8 +3,10 @@ package com.example.android.youtubemusicplayer.playlists
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.annotation.MenuRes
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -16,6 +18,8 @@ import com.example.android.youtubemusicplayer.download_music.DownloadableSongsAd
 import com.example.android.youtubemusicplayer.songs.SongsDiffCallback
 
 class PlaylistsAdapter: ListAdapter<PlaylistWithSongs, PlaylistsAdapter.PlaylistsViewHolder>(PlaylistsDiffCallback()) {
+
+    lateinit var onOptionsSelected: ((view: View, menuRes: Int, playlist: Playlist) -> Unit);
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlaylistsViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
@@ -40,6 +44,11 @@ class PlaylistsAdapter: ListAdapter<PlaylistWithSongs, PlaylistsAdapter.Playlist
             .setOnClickListener(View.OnClickListener {
                 print("algo")
             })
+
+        holder.itemView.findViewById<ImageView>(R.id.playlist_options)
+            .setOnClickListener(View.OnClickListener {
+                onOptionsSelected.invoke(it, R.menu.menu_playlist, item.playlist)
+            })
     }
 
     class PlaylistsViewHolder(linearLayout: LinearLayout): RecyclerView.ViewHolder(linearLayout) {
@@ -55,7 +64,11 @@ class PlaylistsAdapter: ListAdapter<PlaylistWithSongs, PlaylistsAdapter.Playlist
 
 class PlaylistsDiffCallback : DiffUtil.ItemCallback<PlaylistWithSongs>() {
     override fun areItemsTheSame(oldItem: PlaylistWithSongs, newItem: PlaylistWithSongs): Boolean {
-        return oldItem.playlist.playlistId == newItem.playlist.playlistId;
+        if (oldItem.playlist.playlistId == newItem.playlist.playlistId
+            && oldItem.songs.size == newItem.songs.size) {
+            return true;
+        }
+        return false;
     }
 
     override fun areContentsTheSame(

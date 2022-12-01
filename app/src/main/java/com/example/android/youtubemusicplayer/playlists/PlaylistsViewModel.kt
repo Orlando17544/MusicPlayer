@@ -23,4 +23,26 @@ class PlaylistsViewModel(val database: MusicDatabaseDao,
             database.insertPlaylist(newPlaylist);
         }
     }
+
+    fun deletePlaylist(playlist: Playlist) {
+
+        viewModelScope.launch {
+            val songs: List<Song> = database.getSongsByPlaylistId(playlist.playlistId);
+
+            for (song in songs) {
+                song.playlistContainerId = 0;
+
+                database.updateSong(song);
+            }
+
+            database.deletePlaylist(playlist);
+        }
+    }
+
+    fun updatePlaylist(playlist: Playlist, playlistName: String) {
+        viewModelScope.launch {
+            playlist.name = playlistName;
+            database.updatePlaylist(playlist);
+        }
+    }
 }
