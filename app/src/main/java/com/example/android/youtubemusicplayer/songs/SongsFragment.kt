@@ -1,7 +1,6 @@
 package com.example.android.youtubemusicplayer.songs
 
 import android.graphics.Color
-import android.media.MediaPlayer
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View

@@ -35,4 +35,8 @@ interface MusicDatabaseDao {
     @Transaction
     @Query("SELECT * FROM playlists_table")
     fun getPlaylistsWithSongs(): LiveData<List<PlaylistWithSongs>>
+
+    @Transaction
+    @Query("SELECT * FROM albums_table")
+    fun getAlbumWithSongs(): LiveData<List<AlbumWithSongs>>
 }

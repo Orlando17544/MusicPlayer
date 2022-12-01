@@ -9,13 +9,12 @@ import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.example.android.youtubemusicplayer.database.MusicDatabase
 import com.example.android.youtubemusicplayer.download_music.DownloadMusicActivity
-import com.example.android.youtubemusicplayer.songs.SongsFragment
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
@@ -69,7 +68,9 @@ class MainActivity : AppCompatActivity() {
         val playerLinearLayout = findViewById<LinearLayout>(R.id.player_item);
 
         playerLinearLayout.setOnClickListener(View.OnClickListener {
-            if (MusicPlayer.paused) {
+            if (MusicPlayer.currentSong == null) {
+                Snackbar.make(it, "You need to select a song", Snackbar.LENGTH_SHORT).show();
+            } else if (MusicPlayer.paused) {
                 MusicPlayer.playSong();
             } else {
                 MusicPlayer.pauseSong();

@@ -5,15 +5,15 @@ import com.example.android.youtubemusicplayer.database.Song
 
 object MusicPlayer {
     private var mediaplayer = MediaPlayer();
-    private lateinit var currentSong: Song;
+    var currentSong: Song? = null;
 
     var paused = true;
 
-    private fun prepareSong(song: Song) {
+    private fun prepareSong(song: Song?) {
         currentSong = song;
         mediaplayer = MediaPlayer();
 
-        mediaplayer.setDataSource(currentSong.path);
+        mediaplayer.setDataSource(currentSong?.path);
         mediaplayer.prepare();
     }
 
@@ -25,10 +25,10 @@ object MusicPlayer {
         mediaplayer.stop();
     }
 
-    fun playSong(song: Song = currentSong) {
-        if (!::currentSong.isInitialized) {
+    fun playSong(song: Song? = currentSong) {
+        if (currentSong == null) {
             prepareSong(song);
-        } else if (!currentSong.equals(song)) {
+        } else if (!currentSong!!.equals(song)) {
             stopSong();
             prepareSong(song);
         }
