@@ -38,5 +38,5 @@ interface MusicDatabaseDao {
 
     @Transaction
     @Query("SELECT * FROM albums_table")
-    fun getAlbumWithSongs(): LiveData<List<AlbumWithSongs>>
+    fun getAlbumWithArtist(): LiveData<List<AlbumWithArtist>>
 }

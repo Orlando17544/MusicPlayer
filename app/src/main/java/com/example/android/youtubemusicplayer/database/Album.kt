@@ -10,7 +10,4 @@ data class Album (
     val albumId: Int = 0,
 
     var name: String = "",
-
-    @ColumnInfo(name = "artistContainerId")
-    var artistContainerId: Int = 0
 )

@@ -53,8 +53,6 @@ class PlaylistFragment : Fragment() {
 
         recyclerView.adapter = adapter;
 
-        viewModel = ViewModelProvider(this).get(PlaylistsViewModel::class.java)
-
         val addPlaylist = view.findViewById<ImageView>(R.id.add_playlist);
 
         addPlaylist.setOnClickListener(View.OnClickListener {
