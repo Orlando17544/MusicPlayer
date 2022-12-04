@@ -14,11 +14,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.android.youtubemusicplayer.R
 import com.example.android.youtubemusicplayer.database.Album
 import com.example.android.youtubemusicplayer.database.MusicDatabase
-import com.example.android.youtubemusicplayer.database.Playlist
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textfield.TextInputLayout
 
 class AlbumsFragment : Fragment() {
 
@@ -63,7 +61,7 @@ class AlbumsFragment : Fragment() {
             val addAlbumView = inflater.inflate(R.layout.add_edit_album, null)
 
             val items = viewModel.artists;
-            val adapter = ArrayAdapter(requireContext(), R.layout.artist_item, items)
+            val adapter = ArrayAdapter(requireContext(), R.layout.artist_item_autocomplete, items)
             val autoCompleteTextView = addAlbumView.findViewById<AutoCompleteTextView>(R.id.edit_artist_name);
             autoCompleteTextView.setAdapter(adapter)
 
@@ -100,7 +98,7 @@ class AlbumsFragment : Fragment() {
                     editAlbumView.findViewById<EditText>(R.id.edit_album_name).setText(album.name);
 
                     val items = viewModel.artists;
-                    val adapter = ArrayAdapter(requireContext(), R.layout.artist_item, items)
+                    val adapter = ArrayAdapter(requireContext(), R.layout.artist_item_autocomplete, items)
                     val autoCompleteTextView = editAlbumView.findViewById<AutoCompleteTextView>(R.id.edit_artist_name);
                     autoCompleteTextView.setAdapter(adapter)
 
