@@ -1,26 +1,24 @@
 package com.example.android.youtubemusicplayer.albums
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.PopupMenu
+import android.widget.*
 import androidx.annotation.MenuRes
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android.youtubemusicplayer.R
+import com.example.android.youtubemusicplayer.database.Album
 import com.example.android.youtubemusicplayer.database.MusicDatabase
 import com.example.android.youtubemusicplayer.database.Playlist
-import com.example.android.youtubemusicplayer.playlists.PlaylistsAdapter
-import com.example.android.youtubemusicplayer.playlists.PlaylistsViewModel
-import com.example.android.youtubemusicplayer.playlists.PlaylistsViewModelFactory
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 
 class AlbumsFragment : Fragment() {
 
@@ -44,41 +42,98 @@ class AlbumsFragment : Fragment() {
 
         val adapter = AlbumsAdapter();
 
-        viewModel.albumWithArtist.observe(viewLifecycleOwner, Observer {
+        viewModel.albumAndArtist.observe(viewLifecycleOwner, Observer {
             it?.let {
                 adapter.submitList(it);
             }
         })
 
+        val manager = GridLayoutManager(activity, 2, GridLayoutManager.VERTICAL, false);
+
         val recyclerView: RecyclerView = view.findViewById(R.id.albums);
 
         recyclerView.adapter = adapter;
+        recyclerView.layoutManager = manager;
 
         viewModel = ViewModelProvider(this).get(AlbumsViewModel::class.java)
 
-        val addPlaylist = view.findViewById<ImageView>(R.id.add_album);
+        val addAlbum = view.findViewById<ImageView>(R.id.add_album);
 
-        /*
-        addPlaylist.setOnClickListener(View.OnClickListener {
-            val addPlaylistView = inflater.inflate(R.layout.add_edit_playlist, null)
+        addAlbum.setOnClickListener(View.OnClickListener {
+            val addAlbumView = inflater.inflate(R.layout.add_edit_album, null)
+
+            val items = viewModel.artists;
+            val adapter = ArrayAdapter(requireContext(), R.layout.artist_item, items)
+            val autoCompleteTextView = addAlbumView.findViewById<AutoCompleteTextView>(R.id.edit_artist_name);
+            autoCompleteTextView.setAdapter(adapter)
 
             MaterialAlertDialogBuilder(it.context)
-                .setView(addPlaylistView)
+                .setView(addAlbumView)
                 .setNegativeButton("Cancel") { dialog, which ->
-                    Snackbar.make(it, "The playlist was not added", Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(it, "The album was not added", Snackbar.LENGTH_SHORT).show();
                 }
                 .setPositiveButton("Ok") { dialog, which ->
-                    val newPlaylistEditText = addPlaylistView.findViewById<TextInputEditText>(R.id.edit_playlist_name);
-                    viewModel.addPlaylist(newPlaylistEditText.text.toString());
+                    val newAlbumNameEditText = addAlbumView.findViewById<TextInputEditText>(R.id.edit_album_name);
+                    val newArtistNameEditText = addAlbumView.findViewById<AutoCompleteTextView>(R.id.edit_artist_name);
+
+                    viewModel.addAlbum(newAlbumNameEditText.text.toString(), newArtistNameEditText.text.toString());
                 }
                 .show();
-        })*/
+        })
 
-        /*
-        adapter.onOptionsSelected = { view: View, menuRes: Int, playlist: Playlist ->
-            showMenu(view, R.menu.menu_playlist, playlist);
-        }*/
+        adapter.onOptionsSelected = { view: View, menuRes: Int, album: Album ->
+            showMenu(view, R.menu.menu_album, album);
+        }
 
         return view;
+    }
+
+    private fun showMenu(view: View, @MenuRes menuRes: Int, album: Album) {
+        val popup = PopupMenu(requireContext(), view)
+        popup.menuInflater.inflate(menuRes, popup.menu)
+
+        popup.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.edit_album -> {
+                    val editAlbumView = layoutInflater.inflate(R.layout.add_edit_album, null)
+
+                    editAlbumView.findViewById<EditText>(R.id.edit_album_name).setText(album.name);
+
+                    val items = viewModel.artists;
+                    val adapter = ArrayAdapter(requireContext(), R.layout.artist_item, items)
+                    val autoCompleteTextView = editAlbumView.findViewById<AutoCompleteTextView>(R.id.edit_artist_name);
+                    autoCompleteTextView.setAdapter(adapter)
+
+                    MaterialAlertDialogBuilder(view.context)
+                        .setView(editAlbumView)
+                        .setNegativeButton("Cancel") { dialog, which ->
+                            Snackbar.make(view, "The album was not changed", Snackbar.LENGTH_SHORT).show();
+                        }
+                        .setPositiveButton("Ok") { dialog, which ->
+                            val newAlbumNameEditText = editAlbumView.findViewById<TextInputEditText>(R.id.edit_album_name);
+                            val newArtistNameEditText = editAlbumView.findViewById<AutoCompleteTextView>(R.id.edit_artist_name);
+
+                            viewModel.updateAlbum(album, newAlbumNameEditText.text.toString(), newArtistNameEditText.text.toString())
+                                .observe(viewLifecycleOwner, Observer { isAlbumEdited ->
+                                    if (!isAlbumEdited) {
+                                        Snackbar.make(view, "There must be at least one album per artist", Snackbar.LENGTH_SHORT).show();
+                                    }
+                                });
+                        }
+                        .show();
+                }
+                R.id.delete_album -> {
+                    viewModel.deleteAlbum(album).observe(viewLifecycleOwner, Observer { isAlbumDeleted ->
+                        if (!isAlbumDeleted) {
+                            Snackbar.make(view, "There must be at least one album per artist", Snackbar.LENGTH_SHORT).show();
+                        }
+                    })
+                }
+            }
+            false
+        }
+
+        // Show the popup menu.
+        popup.show()
     }
 }

@@ -3,12 +3,12 @@ package com.example.android.youtubemusicplayer.database
 import androidx.room.Embedded
 import androidx.room.Relation
 
-data class AlbumWithArtist (
+data class AlbumAndArtist (
     @Embedded
     val album: Album,
     @Relation(
-        parentColumn = "albumId",
-        entityColumn = "albumContainerId"
+        parentColumn = "artistContainerId",
+        entityColumn = "artistId"
     )
-    val artist: Artist
+    val artist: Artist?
 )

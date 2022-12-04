@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "songs_table")
 data class Song (
     @PrimaryKey(autoGenerate = true)
-    var songId: Int = 0,
+    var songId: Long = 0,
 
     @ColumnInfo(name = "path")
     var path: String = "",
@@ -19,8 +19,8 @@ data class Song (
     var artist: String = "",
 
     @ColumnInfo(name = "playlistContainerId")
-    var playlistContainerId: Int = 0,
+    var playlistContainerId: Long = 0,
 
     @ColumnInfo(name = "albumContainerId")
-    var albumContainerId: Int = 0
+    var albumContainerId: Long = 0
 )

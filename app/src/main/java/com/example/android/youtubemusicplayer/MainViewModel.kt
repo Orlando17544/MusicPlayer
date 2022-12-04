@@ -7,9 +7,7 @@ import android.os.Parcelable
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.android.youtubemusicplayer.database.Song
-import com.example.android.youtubemusicplayer.database.MusicDatabaseDao
-import com.example.android.youtubemusicplayer.database.Playlist
+import com.example.android.youtubemusicplayer.database.*
 import com.example.android.youtubemusicplayer.download_music.DownloadableSong
 import com.example.android.youtubemusicplayer.network.Api
 import com.google.firebase.ktx.Firebase
@@ -87,16 +85,35 @@ class MainViewModel(val database: MusicDatabaseDao,
         return ""
     }
 
-    private suspend fun insert(downloadableSong: DownloadableSong, path: String) {
-        lateinit var newSong: Song;
+    @Synchronized private suspend fun insert(downloadableSong: DownloadableSong, path: String) {
 
-        newSong = Song();
-        newSong.path = path;
-        newSong.name = downloadableSong.name;
-        newSong.artist = downloadableSong.artist;
-        newSong.playlistContainerId = 0;
+            val artists = database.getArtistsNames();
 
-        database.insertSong(newSong);
+            val newSong: Song = Song();
+
+            if (artists.filter { it == downloadableSong.artist }.size == 0) {
+                val newArtist: Artist = Artist();
+
+                newArtist.name = downloadableSong.artist;
+
+                val newArtistId = database.insertArtist(newArtist);
+
+                val newAlbum: Album = Album();
+
+                newAlbum.name = "Album of " + downloadableSong.artist;
+                newAlbum.artistContainerId = newArtistId;
+
+                val newAlbumId = database.insertAlbum(newAlbum);
+
+                newSong.albumContainerId = newAlbumId;
+            }
+
+            newSong.path = path;
+            newSong.name = downloadableSong.name;
+            newSong.playlistContainerId = 0;
+
+            database.insertSong(newSong);
+
     }
 
     private fun convertToDownloadableSong(downloadableSongsSelectedParcelable: Array<Parcelable>): MutableList<DownloadableSong> {

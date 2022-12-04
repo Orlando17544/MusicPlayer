@@ -10,16 +10,17 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android.youtubemusicplayer.R
-import com.example.android.youtubemusicplayer.database.AlbumWithArtist
+import com.example.android.youtubemusicplayer.database.Album
+import com.example.android.youtubemusicplayer.database.AlbumAndArtist
 
-class AlbumsAdapter: ListAdapter<AlbumWithArtist, AlbumsAdapter.AlbumsViewHolder>(
+class AlbumsAdapter: ListAdapter<AlbumAndArtist, AlbumsAdapter.AlbumsViewHolder>(
     AlbumsDiffCallback()
 ) {
-    //lateinit var onOptionsSelected: ((view: View, menuRes: Int, playlist: Playlist) -> Unit);
+    lateinit var onOptionsSelected: ((view: View, menuRes: Int, album: Album) -> Unit);
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AlbumsViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        val view = layoutInflater.inflate(R.layout.playlist_item, parent, false) as LinearLayout
+        val view = layoutInflater.inflate(R.layout.album_item, parent, false) as LinearLayout
 
         return AlbumsViewHolder(view);
     }
@@ -27,41 +28,51 @@ class AlbumsAdapter: ListAdapter<AlbumWithArtist, AlbumsAdapter.AlbumsViewHolder
     override fun onBindViewHolder(holder: AlbumsViewHolder, position: Int) {
         val item = getItem(position);
 
-        holder.itemView.findViewById<TextView>(R.id.playlist_name).text = item.album.name;
-        holder.itemView.findViewById<TextView>(R.id.number_songs_playlist).text = item.artist.name;
+        holder.itemView.findViewById<TextView>(R.id.album_name).text = item.album.name
+        holder.itemView.findViewById<TextView>(R.id.artist_name).text = item.artist?.name;
 
         if (item?.album?.name?.length ?: 0 > 20) {
-            holder.itemView.findViewById<TextView>(R.id.playlist_name).text = item?.album?.name?.substring(0, 20) + "...";
+            holder.itemView.findViewById<TextView>(R.id.album_name).text = item?.album?.name?.substring(0, 20) + "...";
         } else {
-            holder.itemView.findViewById<TextView>(R.id.playlist_name).text = item?.album?.name;
+            holder.itemView.findViewById<TextView>(R.id.album_name).text = item?.album?.name;
         }
 
+        if (item?.artist?.name?.length ?: 0 > 20) {
+            holder.itemView.findViewById<TextView>(R.id.artist_name).text = item?.artist?.name?.substring(0, 20) + "...";
+        } else {
+            holder.itemView.findViewById<TextView>(R.id.artist_name).text = item?.artist?.name;
+        }
+
+        /*
         holder.itemView.findViewById<LinearLayout>(R.id.clickable_playlist)
             .setOnClickListener(View.OnClickListener {
                 print("algo")
             })
-        /*
-        holder.itemView.findViewById<ImageView>(R.id.playlist_options)
+
+
+         */
+
+        holder.itemView.findViewById<ImageView>(R.id.album_options)
             .setOnClickListener(View.OnClickListener {
-                onOptionsSelected.invoke(it, R.menu.menu_playlist, item.playlist)
-            })*/
+                onOptionsSelected.invoke(it, R.menu.menu_playlist, item.album)
+            })
     }
 
     class AlbumsViewHolder(linearLayout: LinearLayout): RecyclerView.ViewHolder(linearLayout) {
-        var playlistName: TextView;
-        var numberSongsPlaylist: TextView;
+        var albumName: TextView;
+        var artistName: TextView;
 
         init {
-            playlistName = linearLayout.findViewById(R.id.playlist_name);
-            numberSongsPlaylist = linearLayout.findViewById(R.id.number_songs_playlist);
+            albumName = linearLayout.findViewById(R.id.album_name);
+            artistName = linearLayout.findViewById(R.id.artist_name);
         }
     }
 }
 
-class AlbumsDiffCallback : DiffUtil.ItemCallback<AlbumWithArtist>() {
-    override fun areItemsTheSame(oldItem: AlbumWithArtist, newItem: AlbumWithArtist): Boolean {
+class AlbumsDiffCallback : DiffUtil.ItemCallback<AlbumAndArtist>() {
+    override fun areItemsTheSame(oldItem: AlbumAndArtist, newItem: AlbumAndArtist): Boolean {
         if (oldItem.album.albumId == newItem.album.albumId
-            && oldItem.artist.artistId == newItem.artist.artistId
+            && oldItem.artist?.artistId == newItem.artist?.artistId
         ) {
             return true;
         }
@@ -69,8 +80,8 @@ class AlbumsDiffCallback : DiffUtil.ItemCallback<AlbumWithArtist>() {
     }
 
     override fun areContentsTheSame(
-        oldItem: AlbumWithArtist,
-        newItem: AlbumWithArtist
+        oldItem: AlbumAndArtist,
+        newItem: AlbumAndArtist
     ): Boolean {
         return oldItem == newItem;
     }
