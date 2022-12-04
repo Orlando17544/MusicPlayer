@@ -34,6 +34,12 @@ class PlaylistsAdapter: ListAdapter<PlaylistWithSongs, PlaylistsAdapter.Playlist
         holder.itemView.findViewById<TextView>(R.id.playlist_name).text = item?.playlist?.name;
         holder.itemView.findViewById<TextView>(R.id.number_songs_playlist).text = item?.songs?.size.toString();
 
+        if (item.songs.size == 1) {
+            holder.itemView.findViewById<TextView>(R.id.number_songs_playlist).text = item.songs.size.toString() + " song";
+        } else {
+            holder.itemView.findViewById<TextView>(R.id.number_songs_playlist).text = item.songs.size.toString() + " songs";
+        }
+
         if (item?.playlist?.name?.length ?: 0 > 20) {
             holder.itemView.findViewById<TextView>(R.id.playlist_name).text = item?.playlist?.name?.substring(0, 20) + "...";
         } else {

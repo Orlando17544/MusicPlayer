@@ -30,9 +30,9 @@ class ArtistsAdapter: ListAdapter<ArtistWithAlbums, ArtistsAdapter.ArtistsViewHo
 
         holder.itemView.findViewById<TextView>(R.id.artist_name).text = item.artist.name
         if (item.albums.size == 1) {
-            holder.itemView.findViewById<TextView>(R.id.number_albums_artist).text = item.albums.size.toString() + " song";
+            holder.itemView.findViewById<TextView>(R.id.number_albums_artist).text = item.albums.size.toString() + " album";
         } else {
-            holder.itemView.findViewById<TextView>(R.id.number_albums_artist).text = item.albums.size.toString() + " songs";
+            holder.itemView.findViewById<TextView>(R.id.number_albums_artist).text = item.albums.size.toString() + " albums";
         }
 
 
