@@ -3,16 +3,20 @@ package com.example.android.youtubemusicplayer.songs
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android.youtubemusicplayer.R
+import com.example.android.youtubemusicplayer.database.Playlist
 import com.example.android.youtubemusicplayer.database.Song
 import com.example.android.youtubemusicplayer.database.SongWithAlbumAndArtist
 
 class SongsAdapter : ListAdapter<SongWithAlbumAndArtist, SongsAdapter.SongsViewHolder>(SongsDiffCallback()) {
+
+    lateinit var onOptionsSelected: ((view: View, menuRes: Int, song: Song) -> Unit);
 
     lateinit var onItemChange: ((View, Int, Int) -> Unit);
     lateinit var onItemSelected: ((SongWithAlbumAndArtist) -> Unit);
@@ -54,6 +58,11 @@ class SongsAdapter : ListAdapter<SongWithAlbumAndArtist, SongsAdapter.SongsViewH
         })
 
         onItemChange?.invoke(holder.itemView, position, positionSelected);
+
+        holder.itemView.findViewById<ImageView>(R.id.song_options)
+            .setOnClickListener(View.OnClickListener {
+                onOptionsSelected.invoke(it, R.menu.menu_song, item.song)
+            })
     }
 
     class SongsViewHolder(linearLayout: LinearLayout): RecyclerView.ViewHolder(linearLayout) {

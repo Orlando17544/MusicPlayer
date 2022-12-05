@@ -31,14 +31,14 @@ class AlbumsAdapter: ListAdapter<AlbumAndArtist, AlbumsAdapter.AlbumsViewHolder>
         holder.itemView.findViewById<TextView>(R.id.album_name).text = item.album.name
         holder.itemView.findViewById<TextView>(R.id.artist_name).text = item.artist?.name;
 
-        if (item?.album?.name?.length ?: 0 > 20) {
-            holder.itemView.findViewById<TextView>(R.id.album_name).text = item?.album?.name?.substring(0, 20) + "...";
+        if (item?.album?.name?.length ?: 0 > 15) {
+            holder.itemView.findViewById<TextView>(R.id.album_name).text = item?.album?.name?.substring(0, 15) + "...";
         } else {
             holder.itemView.findViewById<TextView>(R.id.album_name).text = item?.album?.name;
         }
 
-        if (item?.artist?.name?.length ?: 0 > 20) {
-            holder.itemView.findViewById<TextView>(R.id.artist_name).text = item?.artist?.name?.substring(0, 20) + "...";
+        if (item?.artist?.name?.length ?: 0 > 15) {
+            holder.itemView.findViewById<TextView>(R.id.artist_name).text = item?.artist?.name?.substring(0, 15) + "...";
         } else {
             holder.itemView.findViewById<TextView>(R.id.artist_name).text = item?.artist?.name;
         }
