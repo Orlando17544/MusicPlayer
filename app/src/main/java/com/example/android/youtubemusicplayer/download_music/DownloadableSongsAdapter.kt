@@ -41,7 +41,7 @@ class DownloadableSongsAdapter(val downloadableSongs: Array<DownloadableSong>, v
         }
 
         val downloadedIdentifiers = data.map {
-            it.song.name + it.albumAndArtist.artist?.name;
+            it.song.name + it.albumAndArtist?.artist?.name;
         }
 
         val downloadableIdentifier = item.name + item.artist;

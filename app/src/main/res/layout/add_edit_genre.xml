@@ -4,10 +4,10 @@
     android:id="@+id/filledTextField"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:hint="Name of the gen">
+    android:hint="Name of the genre">
 
     <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/edit_playlist_name"
+        android:id="@+id/edit_genre_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         />

@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.annotation.MenuRes
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
@@ -52,10 +53,12 @@ class SongsFragment : Fragment() {
         adapter.onItemChange = { itemView: View, position: Int, positionSelected: Int ->
             if (positionSelected.equals(position)) {
                 itemView.setBackgroundColor(Color.parseColor("#ecaf31"));
-                itemView.findViewById<ImageView>(R.id.song_icon).setBackgroundColor(Color.parseColor("#ecaf31"));
+                itemView.findViewById<ImageView>(R.id.song_icon)
+                    .setBackgroundColor(Color.parseColor("#ecaf31"));
             } else {
                 itemView.setBackgroundColor(Color.parseColor("#202755"));
-                itemView.findViewById<ImageView>(R.id.song_icon).setBackgroundColor(Color.parseColor("#373c66"));
+                itemView.findViewById<ImageView>(R.id.song_icon)
+                    .setBackgroundColor(Color.parseColor("#373c66"));
             }
         }
 
@@ -68,7 +71,7 @@ class SongsFragment : Fragment() {
             val artistTextView = playerLinearLayout?.findViewById<TextView>(R.id.song_artist);
 
             nameTextView?.text = songWithAlbumAndArtist.song.name;
-            artistTextView?.text = songWithAlbumAndArtist.albumAndArtist.artist?.name;
+            artistTextView?.text = songWithAlbumAndArtist.albumAndArtist?.artist?.name;
         }
 
         adapter.onItemDeselected = {
@@ -94,6 +97,7 @@ class SongsFragment : Fragment() {
         popup.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.edit_song -> {
+                    showDialog();
                     /*
                     val editSongView = layoutInflater.inflate(R.layout.add_edit_song, null)
 
@@ -119,5 +123,21 @@ class SongsFragment : Fragment() {
 
         // Show the popup menu.
         popup.show()
+    }
+
+    fun showDialog() {
+        val fragmentManager = activity?.supportFragmentManager
+        val newFragment = SongsEditFragment()
+
+        // The device is smaller, so show the fragment fullscreen
+        val transaction = fragmentManager?.beginTransaction()
+        // For a little polish, specify a transition animation
+        transaction?.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+        // To make it fullscreen, use the 'content' root view as the container
+        // for the fragment, which is always the root view for the activity
+        transaction
+            ?.add(android.R.id.content, newFragment)
+            ?.addToBackStack(null)
+            ?.commit()
     }
 }

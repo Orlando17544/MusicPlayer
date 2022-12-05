@@ -79,7 +79,7 @@ class SongsAdapter : ListAdapter<SongWithAlbumAndArtist, SongsAdapter.SongsViewH
 class SongsDiffCallback : DiffUtil.ItemCallback<SongWithAlbumAndArtist>() {
     override fun areItemsTheSame(oldItem: SongWithAlbumAndArtist, newItem: SongWithAlbumAndArtist): Boolean {
         if (oldItem.song.songId == newItem.song.songId
-            && oldItem.albumAndArtist.artist?.artistId == newItem.albumAndArtist.artist?.artistId) {
+            && oldItem.albumAndArtist?.artist?.artistId == newItem.albumAndArtist?.artist?.artistId) {
             return true;
         }
         return false;

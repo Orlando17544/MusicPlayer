@@ -72,9 +72,9 @@ class AlbumsFragment : Fragment() {
                 }
                 .setPositiveButton("Ok") { dialog, which ->
                     val newAlbumNameEditText = addAlbumView.findViewById<TextInputEditText>(R.id.edit_album_name);
-                    val newArtistNameEditText = addAlbumView.findViewById<AutoCompleteTextView>(R.id.edit_artist_name);
+                    val newArtistNameAutoComplete = addAlbumView.findViewById<AutoCompleteTextView>(R.id.edit_artist_name);
 
-                    viewModel.addAlbum(newAlbumNameEditText.text.toString(), newArtistNameEditText.text.toString());
+                    viewModel.addAlbum(newAlbumNameEditText.text.toString(), newArtistNameAutoComplete.text.toString());
                 }
                 .show();
         })
@@ -109,9 +109,9 @@ class AlbumsFragment : Fragment() {
                         }
                         .setPositiveButton("Ok") { dialog, which ->
                             val newAlbumNameEditText = editAlbumView.findViewById<TextInputEditText>(R.id.edit_album_name);
-                            val newArtistNameEditText = editAlbumView.findViewById<AutoCompleteTextView>(R.id.edit_artist_name);
+                            val newArtistNameAutoComplete = editAlbumView.findViewById<AutoCompleteTextView>(R.id.edit_artist_name);
 
-                            viewModel.updateAlbum(album, newAlbumNameEditText.text.toString(), newArtistNameEditText.text.toString())
+                            viewModel.updateAlbum(album, newAlbumNameEditText.text.toString(), newArtistNameAutoComplete.text.toString())
                                 .observe(viewLifecycleOwner, Observer { isAlbumEdited ->
                                     if (!isAlbumEdited) {
                                         Snackbar.make(view, "There must be at least one album per artist", Snackbar.LENGTH_SHORT).show();

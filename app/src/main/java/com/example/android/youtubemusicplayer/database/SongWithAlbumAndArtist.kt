@@ -11,5 +11,5 @@ data class SongWithAlbumAndArtist (
                 parentColumn = "albumContainerId",
                 entityColumn = "artistContainerId"
         )
-        val albumAndArtist: AlbumAndArtist
+        val albumAndArtist: AlbumAndArtist?
         )
