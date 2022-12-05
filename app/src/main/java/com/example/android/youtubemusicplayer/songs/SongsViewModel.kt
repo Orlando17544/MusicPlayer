@@ -12,5 +12,5 @@ import com.example.android.youtubemusicplayer.database.SongWithAlbumAndArtist
 class SongsViewModel(val database: MusicDatabaseDao,
                      application: Application) : AndroidViewModel(application) {
 
-    val songAndArtist : LiveData<List<SongWithAlbumAndArtist>> = database.getSongWithAlbumAndArtist();
+    val songWithAlbumAndArtist : LiveData<List<SongWithAlbumAndArtist>> = database.getSongWithAlbumAndArtist();
 }

@@ -79,15 +79,18 @@ interface MusicDatabaseDao {
     suspend fun getAlbumsByArtistId(artistId: Long): List<Album>
 
     @Insert
-    suspend fun insertGender(gender: Gender): Long
+    suspend fun insertGenre(genre: Genre): Long
 
     @Update
-    suspend fun updateGender(gender: Gender)
+    suspend fun updateGenre(genre: Genre)
 
     @Delete
-    suspend fun deleteGender(gender: Gender)
+    suspend fun deleteGenre(genre: Genre)
 
     @Transaction
-    @Query("SELECT * FROM genders_table")
-    fun getGendersWithSongs(): LiveData<List<GenderWithSongs>>
+    @Query("SELECT * FROM genres_table")
+    fun getGenresWithSongs(): LiveData<List<GenreWithSongs>>
+
+    @Query("SELECT * FROM songs_table WHERE genreContainerId = :genreId")
+    suspend fun getSongsByGenreId(genreId: Long): List<Song>
 }

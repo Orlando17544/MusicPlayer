@@ -60,7 +60,7 @@ class MainActivity : AppCompatActivity() {
                 1 -> tab.text = "Playlists"
                 2 -> tab.text = "Albums"
                 3 -> tab.text = "Artists"
-                4 -> tab.text = "Genders"
+                4 -> tab.text = "Genres"
             }
         }
         tabLayoutMediator.attach()

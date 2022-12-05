@@ -3,11 +3,11 @@ package com.example.android.youtubemusicplayer.database
 import androidx.room.Embedded
 import androidx.room.Relation
 
-data class GenderWithSongs (
-    @Embedded val gender: Gender,
+data class GenreWithSongs (
+    @Embedded val genre: Genre,
     @Relation(
-        parentColumn = "genderId",
-        entityColumn = "genderContainerId"
+        parentColumn = "genreId",
+        entityColumn = "genreContainerId"
     )
     val songs: List<Song>
     )

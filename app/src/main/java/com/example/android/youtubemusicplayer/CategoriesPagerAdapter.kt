@@ -5,7 +5,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.android.youtubemusicplayer.albums.AlbumsFragment
 import com.example.android.youtubemusicplayer.artists.ArtistsFragment
-import com.example.android.youtubemusicplayer.genders.GendersFragment
+import com.example.android.youtubemusicplayer.genres.GenresFragment
 import com.example.android.youtubemusicplayer.playlists.PlaylistFragment
 import com.example.android.youtubemusicplayer.songs.SongsFragment
 
@@ -21,7 +21,7 @@ class CategoriesPagerAdapter(fragmentActivity: FragmentActivity) : FragmentState
             1 -> fragment = PlaylistFragment()
             2 -> fragment = AlbumsFragment()
             3 -> fragment = ArtistsFragment()
-            4 -> fragment = GendersFragment()
+            4 -> fragment = GenresFragment()
         }
 
         return if (fragment != null) fragment else Fragment();

@@ -4,10 +4,10 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "genders_table")
-data class Gender (
+@Entity(tableName = "genres_table")
+data class Genre (
     @PrimaryKey(autoGenerate = true)
-    val genderId: Long = 0,
+    val genreId: Long = 0,
 
     var name: String = "",
 )

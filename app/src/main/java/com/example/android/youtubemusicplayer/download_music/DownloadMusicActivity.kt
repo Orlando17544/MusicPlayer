@@ -50,7 +50,7 @@ class DownloadMusicActivity : AppCompatActivity() {
 
         val adapter = DownloadableSongsAdapter(viewModel.downloadableSongs, viewModel);
 
-        viewModel.songAndArtist.observe(this, Observer {
+        viewModel.songWithAlbumAndArtist.observe(this, Observer {
             it?.let {
                 adapter.data = it;
             }

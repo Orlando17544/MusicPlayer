@@ -40,7 +40,7 @@ class SongsFragment : Fragment() {
 
         val adapter = SongsAdapter();
 
-        viewModel.songAndArtist.observe(viewLifecycleOwner, Observer {
+        viewModel.songWithAlbumAndArtist.observe(viewLifecycleOwner, Observer {
             it?.let {
                 adapter.submitList(it);
             }
@@ -56,16 +56,16 @@ class SongsFragment : Fragment() {
             }
         }
 
-        adapter.onItemSelected = { songAndArtist: SongWithAlbumAndArtist ->
-            MusicPlayer.playSong(songAndArtist.song);
+        adapter.onItemSelected = { songWithAlbumAndArtist: SongWithAlbumAndArtist ->
+            MusicPlayer.playSong(songWithAlbumAndArtist.song);
 
             val playerLinearLayout = activity?.findViewById<LinearLayout>(R.id.player_item);
 
             val nameTextView = playerLinearLayout?.findViewById<TextView>(R.id.song_name);
             val artistTextView = playerLinearLayout?.findViewById<TextView>(R.id.song_artist);
 
-            nameTextView?.text = songAndArtist.song.name;
-            artistTextView?.text = songAndArtist.albumAndArtist?.artist?.name;
+            nameTextView?.text = songWithAlbumAndArtist.song.name;
+            artistTextView?.text = songWithAlbumAndArtist.albumAndArtist.artist?.name;
         }
 
         adapter.onItemDeselected = {

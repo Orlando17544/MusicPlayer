@@ -21,6 +21,6 @@ data class Song (
     @ColumnInfo(name = "albumContainerId")
     var albumContainerId: Long = 0,
 
-    @ColumnInfo(name = "genderContainerId")
-    var genderContainerId: Long = 0
+    @ColumnInfo(name = "genreContainerId")
+    var genreContainerId: Long = 0
 )
