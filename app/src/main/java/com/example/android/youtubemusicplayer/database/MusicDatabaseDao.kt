@@ -23,6 +23,10 @@ interface MusicDatabaseDao {
     @Query("SELECT * FROM songs_table WHERE albumContainerId = :albumId")
     suspend fun getSongsByAlbumId(albumId: Long): List<Song>
 
+    @Transaction
+    @Query("SELECT * FROM songs_table")
+    fun getSongWithAlbumAndArtist(): LiveData<List<SongWithAlbumAndArtist>>
+
     @Insert
     suspend fun insertPlaylist(playlist: Playlist)
 
@@ -73,4 +77,17 @@ interface MusicDatabaseDao {
 
     @Query("SELECT * FROM albums_table WHERE artistContainerId = :artistId")
     suspend fun getAlbumsByArtistId(artistId: Long): List<Album>
+
+    @Insert
+    suspend fun insertGender(gender: Gender): Long
+
+    @Update
+    suspend fun updateGender(gender: Gender)
+
+    @Delete
+    suspend fun deleteGender(gender: Gender)
+
+    @Transaction
+    @Query("SELECT * FROM genders_table")
+    fun getGendersWithSongs(): LiveData<List<GenderWithSongs>>
 }

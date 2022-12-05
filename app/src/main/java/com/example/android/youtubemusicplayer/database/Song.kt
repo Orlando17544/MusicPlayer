@@ -15,12 +15,12 @@ data class Song (
     @ColumnInfo(name = "name")
     var name: String = "",
 
-    @ColumnInfo(name = "artist")
-    var artist: String = "",
-
     @ColumnInfo(name = "playlistContainerId")
     var playlistContainerId: Long = 0,
 
     @ColumnInfo(name = "albumContainerId")
-    var albumContainerId: Long = 0
+    var albumContainerId: Long = 0,
+
+    @ColumnInfo(name = "genderContainerId")
+    var genderContainerId: Long = 0
 )

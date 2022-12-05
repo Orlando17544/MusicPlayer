@@ -8,10 +8,11 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android.youtubemusicplayer.R
 import com.example.android.youtubemusicplayer.database.Song
+import com.example.android.youtubemusicplayer.database.SongWithAlbumAndArtist
 
 class DownloadableSongsAdapter(val downloadableSongs: Array<DownloadableSong>, val viewModel: DownloadMusicViewModel) : RecyclerView.Adapter<DownloadableSongsAdapter.DownloadableSongsViewHolder>() {
 
-    var data: List<Song> = listOf<Song>()
+    var data: List<SongWithAlbumAndArtist> = listOf<SongWithAlbumAndArtist>()
         set(value) {
             field = value
             notifyDataSetChanged()
@@ -40,7 +41,7 @@ class DownloadableSongsAdapter(val downloadableSongs: Array<DownloadableSong>, v
         }
 
         val downloadedIdentifiers = data.map {
-            it.name + it.artist;
+            it.song.name + it.albumAndArtist.artist?.name;
         }
 
         val downloadableIdentifier = item.name + item.artist;

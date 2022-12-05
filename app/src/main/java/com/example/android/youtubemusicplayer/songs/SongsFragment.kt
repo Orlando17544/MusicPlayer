@@ -16,6 +16,7 @@ import com.example.android.youtubemusicplayer.MusicPlayer
 import com.example.android.youtubemusicplayer.R
 import com.example.android.youtubemusicplayer.database.Song
 import com.example.android.youtubemusicplayer.database.MusicDatabase
+import com.example.android.youtubemusicplayer.database.SongWithAlbumAndArtist
 
 class SongsFragment : Fragment() {
 
@@ -39,7 +40,7 @@ class SongsFragment : Fragment() {
 
         val adapter = SongsAdapter();
 
-        viewModel.songs.observe(viewLifecycleOwner, Observer {
+        viewModel.songAndArtist.observe(viewLifecycleOwner, Observer {
             it?.let {
                 adapter.submitList(it);
             }
@@ -55,16 +56,16 @@ class SongsFragment : Fragment() {
             }
         }
 
-        adapter.onItemSelected = { song: Song ->
-            MusicPlayer.playSong(song);
+        adapter.onItemSelected = { songAndArtist: SongWithAlbumAndArtist ->
+            MusicPlayer.playSong(songAndArtist.song);
 
             val playerLinearLayout = activity?.findViewById<LinearLayout>(R.id.player_item);
 
             val nameTextView = playerLinearLayout?.findViewById<TextView>(R.id.song_name);
             val artistTextView = playerLinearLayout?.findViewById<TextView>(R.id.song_artist);
 
-            nameTextView?.text = song.name;
-            artistTextView?.text = song.artist;
+            nameTextView?.text = songAndArtist.song.name;
+            artistTextView?.text = songAndArtist.albumAndArtist?.artist?.name;
         }
 
         adapter.onItemDeselected = {

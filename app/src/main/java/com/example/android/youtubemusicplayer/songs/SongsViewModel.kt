@@ -7,9 +7,10 @@ import androidx.lifecycle.ViewModel
 import com.example.android.youtubemusicplayer.database.Song
 import com.example.android.youtubemusicplayer.database.MusicDatabase
 import com.example.android.youtubemusicplayer.database.MusicDatabaseDao
+import com.example.android.youtubemusicplayer.database.SongWithAlbumAndArtist
 
 class SongsViewModel(val database: MusicDatabaseDao,
                      application: Application) : AndroidViewModel(application) {
 
-    val songs : LiveData<List<Song>> = database.getSongs();
+    val songAndArtist : LiveData<List<SongWithAlbumAndArtist>> = database.getSongWithAlbumAndArtist();
 }

@@ -113,7 +113,6 @@ class MainViewModel(val database: MusicDatabaseDao,
             newSong.playlistContainerId = 0;
 
             database.insertSong(newSong);
-
     }
 
     private fun convertToDownloadableSong(downloadableSongsSelectedParcelable: Array<Parcelable>): MutableList<DownloadableSong> {

@@ -10,11 +10,12 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android.youtubemusicplayer.R
 import com.example.android.youtubemusicplayer.database.Song
+import com.example.android.youtubemusicplayer.database.SongWithAlbumAndArtist
 
-class SongsAdapter : ListAdapter<Song, SongsAdapter.SongsViewHolder>(SongsDiffCallback()) {
+class SongsAdapter : ListAdapter<SongWithAlbumAndArtist, SongsAdapter.SongsViewHolder>(SongsDiffCallback()) {
 
     lateinit var onItemChange: ((View, Int, Int) -> Unit);
-    lateinit var onItemSelected: ((Song) -> Unit);
+    lateinit var onItemSelected: ((SongWithAlbumAndArtist) -> Unit);
     lateinit var onItemDeselected: (() -> Unit);
     var positionSelected = -1;
 
@@ -28,12 +29,12 @@ class SongsAdapter : ListAdapter<Song, SongsAdapter.SongsViewHolder>(SongsDiffCa
     override fun onBindViewHolder(holder: SongsViewHolder, position: Int) {
         val item = getItem(position);
 
-        holder.itemView.findViewById<TextView>(R.id.song_artist).text = item?.artist;
+        holder.itemView.findViewById<TextView>(R.id.song_artist).text = item?.albumAndArtist?.artist?.name;
 
-        if (item?.name?.length ?: 0 > 20) {
-            holder.itemView.findViewById<TextView>(R.id.song_name).text = item?.name?.substring(0, 20) + "...";
+        if (item?.song?.name?.length ?: 0 > 20) {
+            holder.itemView.findViewById<TextView>(R.id.song_name).text = item?.song?.name?.substring(0, 20) + "...";
         } else {
-            holder.itemView.findViewById<TextView>(R.id.song_name).text = item?.name;
+            holder.itemView.findViewById<TextView>(R.id.song_name).text = item?.song?.name;
         }
 
         holder.itemView.findViewById<LinearLayout>(R.id.clickable_song)
@@ -66,12 +67,16 @@ class SongsAdapter : ListAdapter<Song, SongsAdapter.SongsViewHolder>(SongsDiffCa
     }
 }
 
-class SongsDiffCallback : DiffUtil.ItemCallback<Song>() {
-    override fun areItemsTheSame(oldItem: Song, newItem: Song): Boolean {
-        return oldItem.songId == newItem.songId;
+class SongsDiffCallback : DiffUtil.ItemCallback<SongWithAlbumAndArtist>() {
+    override fun areItemsTheSame(oldItem: SongWithAlbumAndArtist, newItem: SongWithAlbumAndArtist): Boolean {
+        if (oldItem.song.songId == newItem.song.songId
+            && oldItem.albumAndArtist.artist?.artistId == newItem.albumAndArtist.artist?.artistId) {
+            return true;
+        }
+        return false;
     }
 
-    override fun areContentsTheSame(oldItem: Song, newItem: Song): Boolean {
+    override fun areContentsTheSame(oldItem: SongWithAlbumAndArtist, newItem: SongWithAlbumAndArtist): Boolean {
         return oldItem == newItem;
     }
 }
