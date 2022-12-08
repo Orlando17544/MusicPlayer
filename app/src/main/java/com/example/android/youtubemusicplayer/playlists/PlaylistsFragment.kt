@@ -45,7 +45,6 @@ class PlaylistFragment : Fragment() {
         viewModel.playlistWithSongs.observe(viewLifecycleOwner, Observer {
             it?.let {
                 adapter.submitList(it);
-                print("Cambio: " + it.size);
             }
         })
 
@@ -65,7 +64,12 @@ class PlaylistFragment : Fragment() {
                 }
                 .setPositiveButton("Ok") { dialog, which ->
                     val newPlaylistEditText = addPlaylistView.findViewById<TextInputEditText>(R.id.edit_playlist_name);
-                    viewModel.addPlaylist(newPlaylistEditText.text.toString());
+
+                    if (newPlaylistEditText.text?.length?.equals(0)!!) {
+                        Snackbar.make(this.requireView(), "The playlist wasn't added because it can't be empty", Snackbar.LENGTH_SHORT).show();
+                    } else {
+                        viewModel.addPlaylist(newPlaylistEditText.text.toString());
+                    }
                 }
                 .show();
         })
@@ -95,7 +99,12 @@ class PlaylistFragment : Fragment() {
                         }
                         .setPositiveButton("Ok") { dialog, which ->
                             val newPlaylistEditText = editPlaylistView.findViewById<TextInputEditText>(R.id.edit_playlist_name);
-                            viewModel.updatePlaylist(playlist, newPlaylistEditText.text.toString());
+
+                            if (newPlaylistEditText.text?.length?.equals(0)!!) {
+                                Snackbar.make(this.requireView(), "The playlist didn't change because it can't be empty", Snackbar.LENGTH_SHORT).show();
+                            } else {
+                                viewModel.updatePlaylist(playlist, newPlaylistEditText.text.toString());
+                            }
                         }
                         .show();
                 }

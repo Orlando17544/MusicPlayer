@@ -76,7 +76,11 @@ class AlbumsFragment : Fragment() {
                     val newAlbumNameEditText = addAlbumView.findViewById<TextInputEditText>(R.id.edit_album_name);
                     val newArtistNameAutoComplete = addAlbumView.findViewById<AutoCompleteTextView>(R.id.edit_artist_name);
 
-                    viewModel.addAlbum(newAlbumNameEditText.text.toString(), newArtistNameAutoComplete.text.toString());
+                    if (newAlbumNameEditText.text?.length?.equals(0)!!) {
+                        Snackbar.make(this.requireView(), "The album wasn't added because it can't be empty", Snackbar.LENGTH_SHORT).show();
+                    } else {
+                        viewModel.addAlbum(newAlbumNameEditText.text.toString(), newArtistNameAutoComplete.text.toString());
+                    }
                 }
                 .show();
         })
@@ -115,12 +119,16 @@ class AlbumsFragment : Fragment() {
                             val newAlbumNameEditText = editAlbumView.findViewById<TextInputEditText>(R.id.edit_album_name);
                             val newArtistNameAutoComplete = editAlbumView.findViewById<AutoCompleteTextView>(R.id.edit_artist_name);
 
-                            viewModel.updateAlbum(albumAndArtist.album, newAlbumNameEditText.text.toString(), newArtistNameAutoComplete.text.toString())
-                                .observe(viewLifecycleOwner, Observer { isAlbumEdited ->
-                                    if (!isAlbumEdited) {
-                                        Snackbar.make(view, "There must be at least one album per artist", Snackbar.LENGTH_SHORT).show();
-                                    }
-                                });
+                            if (newAlbumNameEditText.text?.length?.equals(0)!!) {
+                                Snackbar.make(this.requireView(), "The album didn't change because it can't be empty", Snackbar.LENGTH_SHORT).show();
+                            } else {
+                                viewModel.updateAlbum(albumAndArtist.album, newAlbumNameEditText.text.toString(), newArtistNameAutoComplete.text.toString())
+                                    .observe(viewLifecycleOwner, Observer { isAlbumEdited ->
+                                        if (!isAlbumEdited) {
+                                            Snackbar.make(view, "There must be at least one album per artist", Snackbar.LENGTH_SHORT).show();
+                                        }
+                                    });
+                            }
                         }
                         .show();
                 }

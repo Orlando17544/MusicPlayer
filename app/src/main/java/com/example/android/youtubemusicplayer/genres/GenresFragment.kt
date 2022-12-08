@@ -63,7 +63,12 @@ class GenresFragment : Fragment() {
                 }
                 .setPositiveButton("Ok") { dialog, which ->
                     val newGenreEditText = addGenreView.findViewById<TextInputEditText>(R.id.edit_genre_name);
-                    viewModel.addGenre(newGenreEditText.text.toString());
+
+                    if (newGenreEditText.text?.length?.equals(0)!!) {
+                        Snackbar.make(this.requireView(), "The genre wasn't added because it can't be empty", Snackbar.LENGTH_SHORT).show();
+                    } else {
+                        viewModel.addGenre(newGenreEditText.text.toString());
+                    }
                 }
                 .show();
         })
@@ -93,7 +98,12 @@ class GenresFragment : Fragment() {
                         }
                         .setPositiveButton("Ok") { dialog, which ->
                             val newGenreEditText = editGenreView.findViewById<TextInputEditText>(R.id.edit_genre_name);
-                            viewModel.updateGenre(genre, newGenreEditText.text.toString());
+
+                            if (newGenreEditText.text?.length?.equals(0)!!) {
+                                Snackbar.make(this.requireView(), "The genre didn't change because it can't be empty", Snackbar.LENGTH_SHORT).show();
+                            } else {
+                                viewModel.updateGenre(genre, newGenreEditText.text.toString());
+                            }
                         }
                         .show();
                 }
