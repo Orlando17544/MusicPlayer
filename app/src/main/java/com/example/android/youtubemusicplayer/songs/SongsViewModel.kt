@@ -21,6 +21,12 @@ class SongsViewModel(val database: MusicDatabaseDao,
         viewModelScope.launch {
             if (database.getSongsByArtistId(songWithAlbumAndArtist.albumAndArtist?.artist?.artistId).size.equals(1)) {
                 database.deleteArtist(artist);
+
+                val albums = database.getAlbumsByArtistId(artist?.artistId);
+
+                for (album in albums) {
+                    database.deleteAlbum(album);
+                }
             }
 
             val file = File(song?.path);

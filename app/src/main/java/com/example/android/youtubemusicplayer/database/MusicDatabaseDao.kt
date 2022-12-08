@@ -96,7 +96,7 @@ interface MusicDatabaseDao {
     suspend fun getAlbumByName(albumName: String): Album;
 
     @Query("SELECT * FROM albums_table WHERE artistContainerId = :artistId")
-    suspend fun getAlbumsByArtistId(artistId: Long): List<Album>
+    suspend fun getAlbumsByArtistId(artistId: Long?): List<Album>
 
     @Query("SELECT name FROM albums_table WHERE artistContainerId = :artistId")
     suspend fun getAlbumsNamesByArtistId(artistId: Long?): List<String>
