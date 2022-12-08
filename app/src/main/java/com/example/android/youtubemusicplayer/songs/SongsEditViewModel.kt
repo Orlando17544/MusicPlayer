@@ -58,25 +58,31 @@ class SongsEditViewModel(val database: MusicDatabaseDao,
         return result;
     }
 
-    fun updateSong(songWithAlbumAndArtist: SongWithAlbumAndArtist?, playlistName: String, albumName: String, genreName: String): LiveData<Boolean> {
-        val result = MutableLiveData<Boolean>();
+    fun updateSong(songWithAlbumAndArtist: SongWithAlbumAndArtist?, playlistName: String, albumName: String, genreName: String) {
 
-        if (playlistName.length.equals(0) || albumName.length.equals(0) || genreName.length.equals(0)) {
-            result.value = false;
-
-            return result;
-        }
         val song = songWithAlbumAndArtist?.song;
 
         viewModelScope.launch {
-            song?.playlistContainerId = database.getPlaylistByName(playlistName).playlistId;
-            song?.albumContainerId = database.getAlbumByName(albumName).albumId;
-            song?.genreContainerId = database.getGenreByName(genreName).genreId;
+            if (playlistName.length.equals(0)) {
+                song?.playlistContainerId = 0;
+            } else {
+                song?.playlistContainerId = database.getPlaylistByName(playlistName).playlistId;
+            }
+
+            if (albumName.length.equals(0)) {
+                song?.albumContainerId = 0;
+            } else {
+                song?.albumContainerId = database.getAlbumByName(albumName).albumId;
+            }
+
+            if (genreName.length.equals(0)) {
+                song?.genreContainerId = 0;
+            } else {
+                song?.genreContainerId = database.getGenreByName(genreName).genreId;
+            }
 
             database.updateSong(song);
-            result.value = true;
         }
-        return result;
     }
 
     fun deleteSong(songWithAlbumAndArtist: SongWithAlbumAndArtist) {

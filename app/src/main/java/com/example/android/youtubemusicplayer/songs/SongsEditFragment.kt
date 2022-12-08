@@ -85,11 +85,7 @@ class SongsEditFragment : DialogFragment() {
             dismiss();
             viewModel.updateSong(songWithAlbumAndArtistSelected, selectPlaylistAutoComplete.text.toString(),
                 selectAlbumAutoComplete.text.toString(),
-                selectGenreAutoComplete.text.toString()).observe(viewLifecycleOwner, Observer { isUpdated ->
-                    if (!isUpdated) {
-                        Snackbar.make(it, "A field was missed", Snackbar.LENGTH_SHORT).show();
-                    }
-            });
+                selectGenreAutoComplete.text.toString())
         })
 
         return view;
