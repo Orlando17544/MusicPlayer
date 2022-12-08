@@ -16,7 +16,7 @@ import com.example.android.youtubemusicplayer.database.SongWithAlbumAndArtist
 
 class SongsAdapter : ListAdapter<SongWithAlbumAndArtist, SongsAdapter.SongsViewHolder>(SongsDiffCallback()) {
 
-    lateinit var onOptionsSelected: ((view: View, menuRes: Int, song: Song) -> Unit);
+    lateinit var onOptionsSelected: ((view: View, menuRes: Int, songWithAlbumAndArtist: SongWithAlbumAndArtist) -> Unit);
 
     lateinit var onItemChange: ((View, Int, Int) -> Unit);
     lateinit var onItemSelected: ((SongWithAlbumAndArtist) -> Unit);
@@ -61,7 +61,7 @@ class SongsAdapter : ListAdapter<SongWithAlbumAndArtist, SongsAdapter.SongsViewH
 
         holder.itemView.findViewById<ImageView>(R.id.song_options)
             .setOnClickListener(View.OnClickListener {
-                onOptionsSelected.invoke(it, R.menu.menu_song, item.song)
+                onOptionsSelected.invoke(it, R.menu.menu_song, item)
             })
     }
 

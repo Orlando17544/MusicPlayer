@@ -1,5 +1,6 @@
 package com.example.android.youtubemusicplayer.database
 
+import android.widget.ArrayAdapter
 import androidx.lifecycle.LiveData
 import androidx.room.*
 
@@ -9,13 +10,10 @@ interface MusicDatabaseDao {
     suspend fun insertSong(song: Song)
 
     @Update
-    suspend fun updateSong(song: Song)
+    suspend fun updateSong(song: com.example.android.youtubemusicplayer.database.Song?)
 
     @Delete
-    suspend fun deleteSong(song: Song)
-
-    @Query("SELECT * FROM songs_table")
-    fun getSongs(): LiveData<List<Song>>
+    suspend fun deleteSong(song: com.example.android.youtubemusicplayer.database.Song?)
 
     @Query("SELECT * FROM songs_table WHERE playlistContainerId = :playlistId")
     suspend fun getSongsByPlaylistId(playlistId: Long): List<Song>
@@ -35,6 +33,17 @@ interface MusicDatabaseDao {
 
     @Delete
     suspend fun deletePlaylist(playlist: Playlist)
+
+    @Query("SELECT name FROM playlists_table")
+    fun getPlaylistsNames(): LiveData<List<String>>;
+
+    @Query("SELECT * FROM playlists_table WHERE name = :playlistName")
+    suspend fun getPlaylistByName(playlistName: String): Playlist;
+
+    @Query("SELECT A.[name] FROM playlists_table A " +
+            "INNER JOIN songs_table ON playlistContainerId = playlistId " +
+            "WHERE songId = :songId")
+    suspend fun getPlaylistNameBySongId(songId: Long?): String;
 
     @Transaction
     @Query("SELECT * FROM playlists_table")
@@ -57,14 +66,14 @@ interface MusicDatabaseDao {
     @Delete
     suspend fun deleteArtist(artist: Artist)
 
-    suspend @Query("SELECT name FROM artists_table")
-    fun getArtistsNames(): List<String>
+    @Query("SELECT name FROM artists_table")
+    fun getArtistsNames(): LiveData<List<String>>
 
-    suspend @Query("SELECT * FROM artists_table WHERE name = :name")
-    fun getArtistByName(name: String): Artist
+    @Query("SELECT * FROM artists_table WHERE name = :name")
+    suspend fun getArtistByName(name: String): Artist
 
-    suspend @Query("SELECT * FROM artists_table WHERE artistId = :id")
-    fun getArtistById(id: Long): Artist
+    @Query("SELECT * FROM artists_table WHERE artistId = :id")
+    suspend fun getArtistById(id: Long): Artist
 
     @Insert
     suspend fun insertAlbum(album: Album): Long
@@ -75,8 +84,19 @@ interface MusicDatabaseDao {
     @Delete
     suspend fun deleteAlbum(album: Album)
 
+    @Query("SELECT * FROM albums_table WHERE name = :albumName")
+    suspend fun getAlbumByName(albumName: String): Album;
+
     @Query("SELECT * FROM albums_table WHERE artistContainerId = :artistId")
     suspend fun getAlbumsByArtistId(artistId: Long): List<Album>
+
+    @Query("SELECT name FROM albums_table WHERE artistContainerId = :artistId")
+    suspend fun getAlbumsNamesByArtistId(artistId: Long?): List<String>
+
+    @Query("SELECT A.[name] FROM albums_table A " +
+            "INNER JOIN songs_table ON albumContainerId = albumId " +
+            "WHERE songId = :songId")
+    suspend fun getAlbumNameBySongId(songId: Long?): String
 
     @Insert
     suspend fun insertGenre(genre: Genre): Long
@@ -86,6 +106,17 @@ interface MusicDatabaseDao {
 
     @Delete
     suspend fun deleteGenre(genre: Genre)
+
+    @Query("SELECT * FROM genres_table WHERE name = :genreName")
+    suspend fun getGenreByName(genreName: String): Genre;
+
+    @Query("SELECT name FROM genres_table")
+    fun getGenresNames(): LiveData<List<String>>;
+
+    @Query("SELECT A.[name] FROM genres_table A " +
+            "INNER JOIN songs_table ON genreContainerId = genreId " +
+            "WHERE songId = :songId")
+    suspend fun getGenreNameBySongId(songId: Long?): String
 
     @Transaction
     @Query("SELECT * FROM genres_table")

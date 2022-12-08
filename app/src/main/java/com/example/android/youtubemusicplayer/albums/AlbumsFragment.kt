@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android.youtubemusicplayer.R
 import com.example.android.youtubemusicplayer.database.Album
+import com.example.android.youtubemusicplayer.database.AlbumAndArtist
 import com.example.android.youtubemusicplayer.database.MusicDatabase
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
@@ -60,10 +61,11 @@ class AlbumsFragment : Fragment() {
         addAlbum.setOnClickListener(View.OnClickListener {
             val addAlbumView = inflater.inflate(R.layout.add_edit_album, null)
 
-            val items = viewModel.artists;
-            val adapter = ArrayAdapter(requireContext(), R.layout.artist_item_autocomplete, items)
-            val autoCompleteTextView = addAlbumView.findViewById<AutoCompleteTextView>(R.id.edit_artist_name);
-            autoCompleteTextView.setAdapter(adapter)
+            val items = viewModel.artists.observe(viewLifecycleOwner, Observer {
+                val adapter = ArrayAdapter(requireContext(), R.layout.artist_item_autocomplete, it)
+                val autoCompleteTextView = addAlbumView.findViewById<AutoCompleteTextView>(R.id.edit_artist_name);
+                autoCompleteTextView.setAdapter(adapter)
+            })
 
             MaterialAlertDialogBuilder(it.context)
                 .setView(addAlbumView)
@@ -79,14 +81,14 @@ class AlbumsFragment : Fragment() {
                 .show();
         })
 
-        adapter.onOptionsSelected = { view: View, menuRes: Int, album: Album ->
-            showMenu(view, R.menu.menu_album, album);
+        adapter.onOptionsSelected = { view: View, menuRes: Int, albumAndArtist: AlbumAndArtist ->
+            showMenu(view, R.menu.menu_album, albumAndArtist);
         }
 
         return view;
     }
 
-    private fun showMenu(view: View, @MenuRes menuRes: Int, album: Album) {
+    private fun showMenu(view: View, @MenuRes menuRes: Int, albumAndArtist: AlbumAndArtist) {
         val popup = PopupMenu(requireContext(), view)
         popup.menuInflater.inflate(menuRes, popup.menu)
 
@@ -95,12 +97,14 @@ class AlbumsFragment : Fragment() {
                 R.id.edit_album -> {
                     val editAlbumView = layoutInflater.inflate(R.layout.add_edit_album, null)
 
-                    editAlbumView.findViewById<EditText>(R.id.edit_album_name).setText(album.name);
+                    editAlbumView.findViewById<EditText>(R.id.edit_album_name).setText(albumAndArtist.album.name);
 
-                    val items = viewModel.artists;
-                    val adapter = ArrayAdapter(requireContext(), R.layout.artist_item_autocomplete, items)
-                    val autoCompleteTextView = editAlbumView.findViewById<AutoCompleteTextView>(R.id.edit_artist_name);
-                    autoCompleteTextView.setAdapter(adapter)
+                    val items = viewModel.artists.observe(viewLifecycleOwner, Observer {
+                        val adapter = ArrayAdapter(requireContext(), R.layout.artist_item_autocomplete, it)
+                        val autoCompleteTextView = editAlbumView.findViewById<AutoCompleteTextView>(R.id.edit_artist_name);
+                        autoCompleteTextView.setText(albumAndArtist.artist?.name);
+                        autoCompleteTextView.setAdapter(adapter);
+                    })
 
                     MaterialAlertDialogBuilder(view.context)
                         .setView(editAlbumView)
@@ -111,7 +115,7 @@ class AlbumsFragment : Fragment() {
                             val newAlbumNameEditText = editAlbumView.findViewById<TextInputEditText>(R.id.edit_album_name);
                             val newArtistNameAutoComplete = editAlbumView.findViewById<AutoCompleteTextView>(R.id.edit_artist_name);
 
-                            viewModel.updateAlbum(album, newAlbumNameEditText.text.toString(), newArtistNameAutoComplete.text.toString())
+                            viewModel.updateAlbum(albumAndArtist.album, newAlbumNameEditText.text.toString(), newArtistNameAutoComplete.text.toString())
                                 .observe(viewLifecycleOwner, Observer { isAlbumEdited ->
                                     if (!isAlbumEdited) {
                                         Snackbar.make(view, "There must be at least one album per artist", Snackbar.LENGTH_SHORT).show();
@@ -121,7 +125,7 @@ class AlbumsFragment : Fragment() {
                         .show();
                 }
                 R.id.delete_album -> {
-                    viewModel.deleteAlbum(album).observe(viewLifecycleOwner, Observer { isAlbumDeleted ->
+                    viewModel.deleteAlbum(albumAndArtist.album).observe(viewLifecycleOwner, Observer { isAlbumDeleted ->
                         if (!isAlbumDeleted) {
                             Snackbar.make(view, "There must be at least one album per artist", Snackbar.LENGTH_SHORT).show();
                         }

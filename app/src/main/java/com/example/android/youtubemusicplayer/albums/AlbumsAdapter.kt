@@ -16,7 +16,7 @@ import com.example.android.youtubemusicplayer.database.AlbumAndArtist
 class AlbumsAdapter: ListAdapter<AlbumAndArtist, AlbumsAdapter.AlbumsViewHolder>(
     AlbumsDiffCallback()
 ) {
-    lateinit var onOptionsSelected: ((view: View, menuRes: Int, album: Album) -> Unit);
+    lateinit var onOptionsSelected: ((view: View, menuRes: Int, albumAndArtist: AlbumAndArtist) -> Unit);
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AlbumsViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
@@ -54,7 +54,7 @@ class AlbumsAdapter: ListAdapter<AlbumAndArtist, AlbumsAdapter.AlbumsViewHolder>
 
         holder.itemView.findViewById<ImageView>(R.id.album_options)
             .setOnClickListener(View.OnClickListener {
-                onOptionsSelected.invoke(it, R.menu.menu_playlist, item.album)
+                onOptionsSelected.invoke(it, R.menu.menu_playlist, item)
             })
     }
 

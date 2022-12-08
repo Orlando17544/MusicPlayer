@@ -1,9 +1,12 @@
 package com.example.android.youtubemusicplayer.database
 
+import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 @Entity(tableName = "songs_table")
 data class Song (
     @PrimaryKey(autoGenerate = true)
@@ -23,4 +26,4 @@ data class Song (
 
     @ColumnInfo(name = "genreContainerId")
     var genreContainerId: Long = 0
-)
+) : Parcelable

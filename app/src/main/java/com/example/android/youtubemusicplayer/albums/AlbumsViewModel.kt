@@ -10,13 +10,7 @@ class AlbumsViewModel(
     application: Application
 ) : AndroidViewModel(application) {
     val albumAndArtist: LiveData<List<AlbumAndArtist>> = database.getAlbumAndArtist();
-    lateinit var artists: List<String>;
-
-    init {
-        viewModelScope.launch {
-            artists = database.getArtistsNames();
-        }
-    }
+    val artists: LiveData<List<String>> = database.getArtistsNames();
 
     fun addAlbum(albumName: String, artistName: String) {
         viewModelScope.launch {

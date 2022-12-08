@@ -78,8 +78,8 @@ class SongsFragment : Fragment() {
             MusicPlayer.pauseSong();
         }
 
-        adapter.onOptionsSelected = { view: View, menuRes: Int, song: Song ->
-            showMenu(view, R.menu.menu_song, song);
+        adapter.onOptionsSelected = { view: View, menuRes: Int, songWithAlbumAndArtist: SongWithAlbumAndArtist ->
+            showMenu(view, R.menu.menu_song, songWithAlbumAndArtist);
         }
 
         val recyclerView: RecyclerView = view.findViewById(R.id.songs);
@@ -90,32 +90,17 @@ class SongsFragment : Fragment() {
         return view;
     }
 
-    private fun showMenu(view: View, @MenuRes menuRes: Int, song: Song) {
+    private fun showMenu(view: View, @MenuRes menuRes: Int, songWithAlbumAndArtist: SongWithAlbumAndArtist) {
         val popup = PopupMenu(requireContext(), view)
         popup.menuInflater.inflate(menuRes, popup.menu)
 
         popup.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.edit_song -> {
-                    showDialog();
-                    /*
-                    val editSongView = layoutInflater.inflate(R.layout.add_edit_song, null)
-
-                    editSongView.findViewById<EditText>(R.id.edit_song_name).setText(song.name);
-
-                    MaterialAlertDialogBuilder(view.context)
-                        .setView(editSongView)
-                        .setNegativeButton("Cancel") { dialog, which ->
-                            Snackbar.make(view, "The song was not changed", Snackbar.LENGTH_SHORT).show();
-                        }
-                        .setPositiveButton("Ok") { dialog, which ->
-                            val newSongEditText = editSongView.findViewById<TextInputEditText>(R.id.edit_song_name);
-                            viewModel.updateSong(song, newSongEditText.text.toString());
-                        }
-                        .show();*/
+                    showDialog(songWithAlbumAndArtist);
                 }
                 R.id.delete_song -> {
-                    //viewModel.deleteSong(song);
+                    viewModel.deleteSong(songWithAlbumAndArtist);
                 }
             }
             false
@@ -125,9 +110,14 @@ class SongsFragment : Fragment() {
         popup.show()
     }
 
-    fun showDialog() {
+    fun showDialog(songWithAlbumAndArtist: SongWithAlbumAndArtist) {
         val fragmentManager = activity?.supportFragmentManager
         val newFragment = SongsEditFragment()
+
+        val args = Bundle();
+        args.putParcelable("songWithAlbumAndArtist", songWithAlbumAndArtist);
+
+        newFragment.arguments = args;
 
         // The device is smaller, so show the fragment fullscreen
         val transaction = fragmentManager?.beginTransaction()
