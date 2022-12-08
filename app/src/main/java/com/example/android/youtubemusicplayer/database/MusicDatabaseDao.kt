@@ -21,6 +21,11 @@ interface MusicDatabaseDao {
     @Query("SELECT * FROM songs_table WHERE albumContainerId = :albumId")
     suspend fun getSongsByAlbumId(albumId: Long): List<Song>
 
+    @Query("SELECT * FROM songs_table " +
+            "INNER JOIN albums_table ON albumId = albumContainerId " +
+            "WHERE artistContainerId = :artistId")
+    suspend fun getSongsByArtistId(artistId: Long?): List<Song>
+
     @Transaction
     @Query("SELECT * FROM songs_table")
     fun getSongWithAlbumAndArtist(): LiveData<List<SongWithAlbumAndArtist>>
@@ -64,7 +69,7 @@ interface MusicDatabaseDao {
     suspend fun updateArtist(artist: Artist)
 
     @Delete
-    suspend fun deleteArtist(artist: Artist)
+    suspend fun deleteArtist(artist: com.example.android.youtubemusicplayer.database.Artist?)
 
     @Query("SELECT name FROM artists_table")
     fun getArtistsNames(): LiveData<List<String>>

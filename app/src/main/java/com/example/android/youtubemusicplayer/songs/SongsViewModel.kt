@@ -17,9 +17,14 @@ class SongsViewModel(val database: MusicDatabaseDao,
     val songWithAlbumAndArtist : LiveData<List<SongWithAlbumAndArtist>> = database.getSongWithAlbumAndArtist();
 
     fun deleteSong(songWithAlbumAndArtist: SongWithAlbumAndArtist) {
-        val song = songWithAlbumAndArtist.song;
+        val song = songWithAlbumAndArtist?.song;
+        val artist = songWithAlbumAndArtist.albumAndArtist?.artist;
 
         viewModelScope.launch {
+            if (database.getSongsByArtistId(songWithAlbumAndArtist.albumAndArtist?.artist?.artistId).size.equals(1)) {
+                database.deleteArtist(artist);
+            }
+
             database.deleteSong(song);
         }
     }

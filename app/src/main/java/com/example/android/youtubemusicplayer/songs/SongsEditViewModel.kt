@@ -84,12 +84,4 @@ class SongsEditViewModel(val database: MusicDatabaseDao,
             database.updateSong(song);
         }
     }
-
-    fun deleteSong(songWithAlbumAndArtist: SongWithAlbumAndArtist) {
-        val song = songWithAlbumAndArtist?.song;
-
-        viewModelScope.launch {
-            database.deleteSong(song);
-        }
-    }
 }
