@@ -69,7 +69,7 @@ interface MusicDatabaseDao {
     suspend fun updateArtist(artist: Artist)
 
     @Delete
-    suspend fun deleteArtist(artist: com.example.android.youtubemusicplayer.database.Artist?)
+    suspend fun deleteArtist(artist: Artist?)
 
     @Query("SELECT name FROM artists_table")
     fun getArtistsNamesLive(): LiveData<List<String>>

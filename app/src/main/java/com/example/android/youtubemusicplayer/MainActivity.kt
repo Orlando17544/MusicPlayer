@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.View
+import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
@@ -68,12 +69,16 @@ class MainActivity : AppCompatActivity() {
         val playerLinearLayout = findViewById<LinearLayout>(R.id.player_item);
 
         playerLinearLayout.setOnClickListener(View.OnClickListener {
+            val playerIconImageView = findViewById<ImageView>(R.id.player_icon);
+
             if (MusicPlayer.currentSong == null) {
                 Snackbar.make(it, "You need to select a song", Snackbar.LENGTH_SHORT).show();
             } else if (MusicPlayer.paused) {
                 MusicPlayer.playSong();
+                playerIconImageView.setImageResource(R.drawable.ic_baseline_pause_24);
             } else {
                 MusicPlayer.pauseSong();
+                playerIconImageView.setImageResource(R.drawable.ic_baseline_play_arrow_24);
             }
         })
     }

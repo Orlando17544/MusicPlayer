@@ -8,6 +8,7 @@
         <entry key="app/src/main/res/drawable/ic_baseline_download_24.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_baseline_more_vert_24.xml" value="0.1405" />
         <entry key="app/src/main/res/drawable/ic_baseline_music_note_24.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_baseline_pause_24.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_baseline_play_arrow_24.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_download_music.xml" value="0.1" />

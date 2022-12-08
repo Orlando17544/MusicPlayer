@@ -72,10 +72,17 @@ class SongsFragment : Fragment() {
 
             nameTextView?.text = songWithAlbumAndArtist.song.name;
             artistTextView?.text = songWithAlbumAndArtist.albumAndArtist?.artist?.name;
+
+            val playerIconImageView = playerLinearLayout?.findViewById<ImageView>(R.id.player_icon);
+
+            playerIconImageView?.setImageResource(R.drawable.ic_baseline_pause_24);
         }
 
         adapter.onItemDeselected = {
+            val playerIconImageView = activity?.findViewById<ImageView>(R.id.player_icon);
+
             MusicPlayer.pauseSong();
+            playerIconImageView?.setImageResource(R.drawable.ic_baseline_play_arrow_24);
         }
 
         adapter.onOptionsSelected = { view: View, menuRes: Int, songWithAlbumAndArtist: SongWithAlbumAndArtist ->
