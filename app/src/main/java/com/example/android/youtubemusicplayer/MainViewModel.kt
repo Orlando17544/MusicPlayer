@@ -85,34 +85,37 @@ class MainViewModel(val database: MusicDatabaseDao,
         return ""
     }
 
-    @Synchronized private suspend fun insert(downloadableSong: DownloadableSong, path: String) {
+    private val mutex = Mutex()
 
-            val artists = database.getArtistsNames();
+    private suspend fun insert(downloadableSong: DownloadableSong, path: String) {
+            mutex.withLock {
+                val artists = database.getArtistsNames();
 
-            val newSong: Song = Song();
+                val newSong: Song = Song();
 
-            if (artists.filter { it == downloadableSong.artist }.size == 0) {
-                val newArtist: Artist = Artist();
+                if (artists.filter { it == downloadableSong.artist }.size == 0) {
+                    val newArtist: Artist = Artist();
 
-                newArtist.name = downloadableSong.artist;
+                    newArtist.name = downloadableSong.artist;
 
-                val newArtistId = database.insertArtist(newArtist);
+                    val newArtistId = database.insertArtist(newArtist);
 
-                val newAlbum: Album = Album();
+                    val newAlbum: Album = Album();
 
-                newAlbum.name = "Album of " + downloadableSong.artist;
-                newAlbum.artistContainerId = newArtistId;
+                    newAlbum.name = "Album of " + downloadableSong.artist;
+                    newAlbum.artistContainerId = newArtistId;
 
-                val newAlbumId = database.insertAlbum(newAlbum);
+                    val newAlbumId = database.insertAlbum(newAlbum);
 
-                newSong.albumContainerId = newAlbumId;
+                    newSong.albumContainerId = newAlbumId;
+                }
+
+                newSong.path = path;
+                newSong.name = downloadableSong.name;
+                newSong.playlistContainerId = 0;
+
+                database.insertSong(newSong);
             }
-
-            newSong.path = path;
-            newSong.name = downloadableSong.name;
-            newSong.playlistContainerId = 0;
-
-            database.insertSong(newSong);
     }
 
     private fun convertToDownloadableSong(downloadableSongsSelectedParcelable: Array<Parcelable>): MutableList<DownloadableSong> {
