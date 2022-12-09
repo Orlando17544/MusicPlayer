@@ -1,7 +1,8 @@
 package com.example.android.youtubemusicplayer.playlists
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.android.youtubemusicplayer.R
 import com.example.android.youtubemusicplayer.database.MusicDatabase
 import com.example.android.youtubemusicplayer.database.Playlist
+import com.example.android.youtubemusicplayer.database.PlaylistWithSongs
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
@@ -40,7 +42,7 @@ class PlaylistFragment : Fragment() {
         viewModel = ViewModelProvider(this, viewModelFactory)
             .get(PlaylistsViewModel::class.java);
 
-        val adapter = PlaylistsAdapter();
+        val adapter = PlaylistsAdapter(context);
 
         viewModel.playlistWithSongs.observe(viewLifecycleOwner, Observer {
             it?.let {
@@ -73,6 +75,12 @@ class PlaylistFragment : Fragment() {
                 }
                 .show();
         })
+
+        adapter.onItemSelected = { playlistId: Long ->
+            val intent = Intent(this.activity, PlaylistSongsActivity::class.java);
+            intent.putExtra("playlistId", playlistId);
+            context?.startActivity(intent);
+        }
 
         adapter.onOptionsSelected = { view: View, menuRes: Int, playlist: Playlist ->
             showMenu(view, R.menu.menu_playlist, playlist);

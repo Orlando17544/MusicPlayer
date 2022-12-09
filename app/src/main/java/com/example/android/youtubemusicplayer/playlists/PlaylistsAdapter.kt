@@ -1,5 +1,6 @@
 package com.example.android.youtubemusicplayer.playlists
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,8 +18,9 @@ import com.example.android.youtubemusicplayer.database.Song
 import com.example.android.youtubemusicplayer.download_music.DownloadableSongsAdapter
 import com.example.android.youtubemusicplayer.songs.SongsDiffCallback
 
-class PlaylistsAdapter: ListAdapter<PlaylistWithSongs, PlaylistsAdapter.PlaylistsViewHolder>(PlaylistsDiffCallback()) {
+class PlaylistsAdapter(val activityContext: Context?): ListAdapter<PlaylistWithSongs, PlaylistsAdapter.PlaylistsViewHolder>(PlaylistsDiffCallback()) {
 
+    lateinit var onItemSelected: ((playlistId: Long) -> Unit);
     lateinit var onOptionsSelected: ((view: View, menuRes: Int, playlist: Playlist) -> Unit);
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlaylistsViewHolder {
@@ -48,12 +50,12 @@ class PlaylistsAdapter: ListAdapter<PlaylistWithSongs, PlaylistsAdapter.Playlist
 
         holder.itemView.findViewById<LinearLayout>(R.id.clickable_playlist)
             .setOnClickListener(View.OnClickListener {
-                print("algo")
+                onItemSelected.invoke(item.playlist.playlistId);
             })
 
         holder.itemView.findViewById<ImageView>(R.id.playlist_options)
             .setOnClickListener(View.OnClickListener {
-                onOptionsSelected.invoke(it, R.menu.menu_playlist, item.playlist)
+                onOptionsSelected.invoke(it, R.menu.menu_playlist, item.playlist);
             })
     }
 
