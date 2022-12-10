@@ -18,9 +18,9 @@ import com.example.android.youtubemusicplayer.database.Song
 import com.example.android.youtubemusicplayer.download_music.DownloadableSongsAdapter
 import com.example.android.youtubemusicplayer.songs.SongsDiffCallback
 
-class PlaylistsAdapter(val activityContext: Context?): ListAdapter<PlaylistWithSongs, PlaylistsAdapter.PlaylistsViewHolder>(PlaylistsDiffCallback()) {
+class PlaylistsAdapter: ListAdapter<PlaylistWithSongs, PlaylistsAdapter.PlaylistsViewHolder>(PlaylistsDiffCallback()) {
 
-    lateinit var onItemSelected: ((playlistId: Long) -> Unit);
+    lateinit var onItemSelected: ((playlist: Playlist) -> Unit);
     lateinit var onOptionsSelected: ((view: View, menuRes: Int, playlist: Playlist) -> Unit);
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlaylistsViewHolder {
@@ -50,7 +50,7 @@ class PlaylistsAdapter(val activityContext: Context?): ListAdapter<PlaylistWithS
 
         holder.itemView.findViewById<LinearLayout>(R.id.clickable_playlist)
             .setOnClickListener(View.OnClickListener {
-                onItemSelected.invoke(item.playlist.playlistId);
+                onItemSelected.invoke(item.playlist);
             })
 
         holder.itemView.findViewById<ImageView>(R.id.playlist_options)

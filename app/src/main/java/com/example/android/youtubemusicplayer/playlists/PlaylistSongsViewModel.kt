@@ -1,21 +1,32 @@
-package com.example.android.youtubemusicplayer.songs
+package com.example.android.youtubemusicplayer.playlists
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.android.youtubemusicplayer.database.MusicDatabaseDao
 import com.example.android.youtubemusicplayer.database.SongWithAlbumAndArtist
 import kotlinx.coroutines.launch
 import java.io.File
 
-class SongsViewModel(val database: MusicDatabaseDao,
-                     application: Application) : AndroidViewModel(application) {
+class PlaylistSongsViewModel(val database: MusicDatabaseDao,
+                             application: Application
+) : AndroidViewModel(application) {
+    fun getSongsWithAlbumAndArtistByPlaylistId(playlistId: Long): LiveData<List<SongWithAlbumAndArtist>> {
+        val result = MutableLiveData<List<SongWithAlbumAndArtist>>();
 
-    val songWithAlbumAndArtist : LiveData<List<SongWithAlbumAndArtist>> = database.getSongWithAlbumAndArtist();
+        viewModelScope.launch {
+            val songsWithAlbumAndArtist = database.getSongWithAlbumAndArtistByPlaylistId(playlistId);
+
+            result.value = songsWithAlbumAndArtist;
+        }
+
+        return result;
+    }
 
     fun deleteSong(songWithAlbumAndArtist: SongWithAlbumAndArtist) {
-        val song = songWithAlbumAndArtist.song;
+        val song = songWithAlbumAndArtist?.song;
         val artist = songWithAlbumAndArtist.albumAndArtist?.artist;
 
         viewModelScope.launch {
@@ -33,13 +44,12 @@ class SongsViewModel(val database: MusicDatabaseDao,
                         database.deleteAlbum(album);
                     }
                 }
-
             }
 
             val file = File(song?.path);
             file.delete();
 
-            database.deleteSong(song);
+            song?.let { database.deleteSong(it) };
         }
     }
 }

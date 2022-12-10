@@ -48,15 +48,13 @@ class DownloadMusicActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this, viewModelFactory)
             .get(DownloadMusicViewModel::class.java);
 
-        val adapter = DownloadableSongsAdapter(viewModel.downloadableSongs, viewModel);
+        val adapter = DownloadableSongsAdapter(viewModel.downloadableSongs);
 
         viewModel.songWithAlbumAndArtist.observe(this, Observer {
             it?.let {
                 adapter.data = it;
             }
         })
-
-        //val adapter = DownloadableSongsAdapter(viewModel.downloadableSongs, viewModel);
 
         adapter.onItemChange = { itemView: View, position: Int,
                                  positionsSelected: List<Int>, positionsDownloaded: List<Int> ->
@@ -70,6 +68,14 @@ class DownloadMusicActivity : AppCompatActivity() {
                 itemView.setBackgroundColor(Color.parseColor("#202755"));
                 itemView.findViewById<ImageView>(R.id.song_icon).setBackgroundColor(Color.parseColor("#373c66"));
             }
+        }
+
+        adapter.onItemSelected = { downloadableSong: DownloadableSong ->
+            viewModel.downloadableSongsSelected.add(downloadableSong);
+        }
+
+        adapter.onItemDeselected = { downloadableSong: DownloadableSong ->
+            viewModel.downloadableSongsSelected.remove(downloadableSong);
         }
 
         val recyclerView: RecyclerView = findViewById(R.id.downloadable_songs);

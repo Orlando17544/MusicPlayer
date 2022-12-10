@@ -15,7 +15,7 @@ class SongsEditViewModel(val database: MusicDatabaseDao,
     var playlistsNames: LiveData<List<String>> = database.getPlaylistsNames();
     var genresNames: LiveData<List<String>> = database.getGenresNames();
 
-    fun getPlaylistNameBySongId(songId: Long?): LiveData<String> {
+    fun getPlaylistNameBySongId(songId: Long): LiveData<String> {
         val result = MutableLiveData<String>();
 
         viewModelScope.launch {
@@ -26,7 +26,7 @@ class SongsEditViewModel(val database: MusicDatabaseDao,
         return result;
     }
 
-    fun getAlbumNameBySongId(songId: Long?): LiveData<String> {
+    fun getAlbumNameBySongId(songId: Long): LiveData<String> {
         val result = MutableLiveData<String>();
 
         viewModelScope.launch {
@@ -37,7 +37,7 @@ class SongsEditViewModel(val database: MusicDatabaseDao,
         return result;
     }
 
-    fun getGenreNameBySongId(songId: Long?): LiveData<String> {
+    fun getGenreNameBySongId(songId: Long): LiveData<String> {
         val result = MutableLiveData<String>();
 
         viewModelScope.launch {
@@ -48,7 +48,7 @@ class SongsEditViewModel(val database: MusicDatabaseDao,
         return result;
     }
 
-    fun getAlbumsNamesByArtistId(artistId: Long?): LiveData<List<String>> {
+    fun getAlbumsNamesByArtistId(artistId: Long): LiveData<List<String>> {
         val result = MutableLiveData<List<String>>();
         viewModelScope.launch {
             val albumsNames = database.getAlbumsNamesByArtistId(artistId);
@@ -58,9 +58,9 @@ class SongsEditViewModel(val database: MusicDatabaseDao,
         return result;
     }
 
-    fun updateSong(songWithAlbumAndArtist: SongWithAlbumAndArtist?, playlistName: String, albumName: String, genreName: String) {
+    fun updateSong(songWithAlbumAndArtist: SongWithAlbumAndArtist, playlistName: String, albumName: String, genreName: String) {
 
-        val song = songWithAlbumAndArtist?.song;
+        val song = songWithAlbumAndArtist.song;
 
         viewModelScope.launch {
             if (playlistName.length.equals(0)) {

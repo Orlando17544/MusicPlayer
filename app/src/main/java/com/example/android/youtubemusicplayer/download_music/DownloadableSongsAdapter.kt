@@ -10,13 +10,16 @@ import com.example.android.youtubemusicplayer.R
 import com.example.android.youtubemusicplayer.database.Song
 import com.example.android.youtubemusicplayer.database.SongWithAlbumAndArtist
 
-class DownloadableSongsAdapter(val downloadableSongs: Array<DownloadableSong>, val viewModel: DownloadMusicViewModel) : RecyclerView.Adapter<DownloadableSongsAdapter.DownloadableSongsViewHolder>() {
+class DownloadableSongsAdapter(val downloadableSongs: Array<DownloadableSong>) : RecyclerView.Adapter<DownloadableSongsAdapter.DownloadableSongsViewHolder>() {
 
     var data: List<SongWithAlbumAndArtist> = listOf<SongWithAlbumAndArtist>()
         set(value) {
             field = value
             notifyDataSetChanged()
         }
+
+    lateinit var onItemSelected: ((downloadableSong: DownloadableSong) -> Unit);
+    lateinit var onItemDeselected: ((downloadableSong: DownloadableSong) -> Unit);
 
     lateinit var onItemChange: ((View, Int, List<Int>, List<Int>) -> Unit);
     val positionsSelected = mutableListOf<Int>();
@@ -55,10 +58,10 @@ class DownloadableSongsAdapter(val downloadableSongs: Array<DownloadableSong>, v
                 return@OnClickListener;
             } else if (positionsSelected.contains(position)) {
                 positionsSelected.remove(position);
-                viewModel.downloadableSongsSelected.add(item);
+                onItemDeselected.invoke(item);
             } else {
                 positionsSelected.add(position);
-                viewModel.downloadableSongsSelected.add(item);
+                onItemSelected.invoke(item);
             }
 
             notifyItemChanged(position);

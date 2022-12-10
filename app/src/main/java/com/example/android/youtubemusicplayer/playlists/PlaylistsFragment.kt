@@ -30,7 +30,6 @@ class PlaylistFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
 
-
         val view = inflater.inflate(R.layout.fragment_playlist, container, false);
 
         val application = requireNotNull(this.activity).application;
@@ -42,7 +41,7 @@ class PlaylistFragment : Fragment() {
         viewModel = ViewModelProvider(this, viewModelFactory)
             .get(PlaylistsViewModel::class.java);
 
-        val adapter = PlaylistsAdapter(context);
+        val adapter = PlaylistsAdapter();
 
         viewModel.playlistWithSongs.observe(viewLifecycleOwner, Observer {
             it?.let {
@@ -76,9 +75,9 @@ class PlaylistFragment : Fragment() {
                 .show();
         })
 
-        adapter.onItemSelected = { playlistId: Long ->
+        adapter.onItemSelected = { playlist: Playlist ->
             val intent = Intent(this.activity, PlaylistSongsActivity::class.java);
-            intent.putExtra("playlistId", playlistId);
+            intent.putExtra("playlist", playlist);
             context?.startActivity(intent);
         }
 

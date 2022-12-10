@@ -13,6 +13,7 @@
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_download_music.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/activity_playlist_songs.xml" value="0.23177083333333334" />
         <entry key="app/src/main/res/layout/add_edit_album.xml" value="0.10663627152988855" />
         <entry key="app/src/main/res/layout/add_edit_gender.xml" value="0.1" />
         <entry key="app/src/main/res/layout/add_edit_playlist.xml" value="0.1" />
@@ -42,6 +43,7 @@
         <entry key="app/src/main/res/menu/menu_genre.xml" value="0.1" />
         <entry key="app/src/main/res/menu/menu_playlist.xml" value="0.1824074074074074" />
         <entry key="app/src/main/res/menu/menu_song.xml" value="0.1" />
+        <entry key="app/src/main/res/menu/menu_songs_artists.xml" value="0.23072916666666668" />
       </map>
     </option>
   </component>
