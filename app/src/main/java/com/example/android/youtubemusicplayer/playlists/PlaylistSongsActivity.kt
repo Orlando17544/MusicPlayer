@@ -136,8 +136,10 @@ class PlaylistSongsActivity : AppCompatActivity() {
                 viewModel.getSongsWithAlbumAndArtistByPlaylistId(it).observe(this, Observer { songsWithAlbumAndArtist ->
                     val index = songsWithAlbumAndArtist.indexOf(currentSongWithAlbumAndArtist);
 
-                    adapter.positionSelected = index;
-                    adapter.notifyDataSetChanged();
+                    if (index != -1) {
+                        adapter.positionSelected = index;
+                        adapter.notifyDataSetChanged();
+                    }
                 })
             }
         }
@@ -204,10 +206,5 @@ class PlaylistSongsActivity : AppCompatActivity() {
             ?.add(android.R.id.content, newFragment)
             ?.addToBackStack(null)
             ?.commit()
-    }
-
-    override fun onResume() {
-        super.onResume()
-
     }
 }
