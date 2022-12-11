@@ -5,7 +5,7 @@ import com.example.android.youtubemusicplayer.database.Song
 import com.example.android.youtubemusicplayer.database.SongWithAlbumAndArtist
 
 object MusicPlayer {
-    private var mediaplayer = MediaPlayer();
+    var mediaplayer = MediaPlayer();
     var currentSongWithAlbumAndArtist: SongWithAlbumAndArtist? = null;
 
     var paused = true;

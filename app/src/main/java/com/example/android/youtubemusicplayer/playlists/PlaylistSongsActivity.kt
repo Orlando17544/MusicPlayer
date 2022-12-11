@@ -1,6 +1,7 @@
 package com.example.android.youtubemusicplayer.playlists
 
 import android.graphics.Color
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.view.View
 import android.widget.*
@@ -83,8 +84,17 @@ class PlaylistSongsActivity : AppCompatActivity() {
             }
         }
 
+        val playerIconImageView = findViewById<ImageView>(R.id.player_icon);
+
         adapter.onItemSelected = { songWithAlbumAndArtist: SongWithAlbumAndArtist ->
             MusicPlayer.playSong(songWithAlbumAndArtist);
+
+            MusicPlayer.mediaplayer.setOnCompletionListener(MediaPlayer.OnCompletionListener {
+                playerIconImageView.setImageResource(R.drawable.ic_baseline_play_arrow_24);
+
+                adapter.positionSelected = -1;
+                adapter.notifyDataSetChanged();
+            })
 
             val playerLinearLayout = findViewById<LinearLayout>(R.id.player_item);
 
@@ -152,8 +162,6 @@ class PlaylistSongsActivity : AppCompatActivity() {
 
             songNameTextView.text = it?.song?.name;
             songArtistTextView.text = it?.albumAndArtist?.artist?.name;
-
-            val playerIconImageView = findViewById<ImageView>(R.id.player_icon);
 
             if (MusicPlayer.paused) {
                 playerIconImageView.setImageResource(R.drawable.ic_baseline_play_arrow_24);
