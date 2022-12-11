@@ -2,18 +2,19 @@ package com.example.android.youtubemusicplayer
 
 import android.media.MediaPlayer
 import com.example.android.youtubemusicplayer.database.Song
+import com.example.android.youtubemusicplayer.database.SongWithAlbumAndArtist
 
 object MusicPlayer {
     private var mediaplayer = MediaPlayer();
-    var currentSong: Song? = null;
+    var currentSongWithAlbumAndArtist: SongWithAlbumAndArtist? = null;
 
     var paused = true;
 
-    private fun prepareSong(song: Song?) {
-        currentSong = song;
+    private fun prepareSong(songWithAlbumAndArtist: SongWithAlbumAndArtist) {
+        currentSongWithAlbumAndArtist = songWithAlbumAndArtist;
         mediaplayer = MediaPlayer();
 
-        mediaplayer.setDataSource(currentSong?.path);
+        mediaplayer.setDataSource(currentSongWithAlbumAndArtist?.song?.path);
         mediaplayer.prepare();
     }
 
@@ -25,12 +26,12 @@ object MusicPlayer {
         mediaplayer.stop();
     }
 
-    fun playSong(song: Song? = currentSong) {
-        if (currentSong == null) {
-            prepareSong(song);
-        } else if (!currentSong!!.equals(song)) {
+    fun playSong(songWithAlbumAndArtist: SongWithAlbumAndArtist? = currentSongWithAlbumAndArtist) {
+        if (currentSongWithAlbumAndArtist == null) {
+            songWithAlbumAndArtist?.let { prepareSong(it) };
+        } else if (!currentSongWithAlbumAndArtist!!.equals(songWithAlbumAndArtist)) {
             stopSong();
-            prepareSong(song);
+            songWithAlbumAndArtist?.let { prepareSong(it) };
         }
         startSong();
         paused = false;

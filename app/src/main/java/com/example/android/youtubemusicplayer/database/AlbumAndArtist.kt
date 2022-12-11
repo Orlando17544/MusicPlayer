@@ -13,5 +13,5 @@ data class AlbumAndArtist (
         parentColumn = "artistContainerId",
         entityColumn = "artistId"
     )
-    val artist: Artist
+    val artist: Artist?
 ) : Parcelable

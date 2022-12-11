@@ -5,14 +5,18 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.example.android.youtubemusicplayer.database.MusicDatabaseDao
+import com.example.android.youtubemusicplayer.database.Song
 import com.example.android.youtubemusicplayer.database.SongWithAlbumAndArtist
 import kotlinx.coroutines.launch
 import java.io.File
 
-class SongsViewModel(val database: MusicDatabaseDao,
-                     application: Application) : AndroidViewModel(application) {
+class SongsViewModel(
+    val database: MusicDatabaseDao,
+    application: Application
+) : AndroidViewModel(application) {
 
-    val songWithAlbumAndArtist : LiveData<List<SongWithAlbumAndArtist>> = database.getSongWithAlbumAndArtist();
+    val songsWithAlbumAndArtist: LiveData<List<SongWithAlbumAndArtist>> =
+        database.getSongWithAlbumAndArtist();
 
     fun deleteSong(songWithAlbumAndArtist: SongWithAlbumAndArtist) {
         val song = songWithAlbumAndArtist.song;
@@ -23,7 +27,8 @@ class SongsViewModel(val database: MusicDatabaseDao,
                     database.getSongsByArtistId(
                         it
                     ).size.equals(1)
-                } == true) {
+                } == true
+            ) {
                 artist?.let { database.deleteArtist(it) };
 
                 val albums = artist?.artistId?.let { database.getAlbumsByArtistId(it) };
@@ -33,10 +38,9 @@ class SongsViewModel(val database: MusicDatabaseDao,
                         database.deleteAlbum(album);
                     }
                 }
-
             }
 
-            val file = File(song?.path);
+            val file = File(song.path);
             file.delete();
 
             database.deleteSong(song);

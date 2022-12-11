@@ -1,13 +1,11 @@
 package com.example.android.youtubemusicplayer.playlists
 
-import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.widget.*
 import androidx.annotation.MenuRes
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -16,15 +14,12 @@ import com.example.android.youtubemusicplayer.MusicPlayer
 import com.example.android.youtubemusicplayer.R
 import com.example.android.youtubemusicplayer.database.MusicDatabase
 import com.example.android.youtubemusicplayer.database.Playlist
+import com.example.android.youtubemusicplayer.database.Song
 import com.example.android.youtubemusicplayer.database.SongWithAlbumAndArtist
 import com.example.android.youtubemusicplayer.songs.SongsAdapter
 import com.example.android.youtubemusicplayer.songs.SongsEditFragment
-import com.example.android.youtubemusicplayer.songs.SongsViewModel
-import com.example.android.youtubemusicplayer.songs.SongsViewModelFactory
 import com.google.android.material.appbar.MaterialToolbar
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.textfield.TextInputEditText
 
 class PlaylistSongsActivity : AppCompatActivity() {
 
@@ -34,7 +29,7 @@ class PlaylistSongsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_playlist_songs)
 
-        val playlist: Playlist? = intent.extras?.getParcelable<Playlist>("playlist");
+        val playlist = intent.extras?.getParcelable<Playlist>("playlist");
 
         val topAppBar = findViewById<MaterialToolbar>(R.id.topAppBar);
 
@@ -89,7 +84,7 @@ class PlaylistSongsActivity : AppCompatActivity() {
         }
 
         adapter.onItemSelected = { songWithAlbumAndArtist: SongWithAlbumAndArtist ->
-            MusicPlayer.playSong(songWithAlbumAndArtist.song);
+            MusicPlayer.playSong(songWithAlbumAndArtist);
 
             val playerLinearLayout = findViewById<LinearLayout>(R.id.player_item);
 
@@ -111,16 +106,66 @@ class PlaylistSongsActivity : AppCompatActivity() {
             playerIconImageView?.setImageResource(R.drawable.ic_baseline_play_arrow_24);
         }
 
-        adapter.onOptionsSelected = { view: View, menuRes: Int, songWithAlbumAndArtist: SongWithAlbumAndArtist ->
-            showMenu(view, R.menu.menu_song, songWithAlbumAndArtist);
-        }
+        adapter.onOptionsSelected =
+            { view: View, menuRes: Int, songWithAlbumAndArtist: SongWithAlbumAndArtist ->
+                showMenu(view, R.menu.menu_song, songWithAlbumAndArtist);
+            }
 
         val recyclerView: RecyclerView = findViewById(R.id.songs);
 
         recyclerView.adapter = adapter;
+
+        val playerLinearLayout = findViewById<LinearLayout>(R.id.player_item);
+
+        playerLinearLayout.setOnClickListener(View.OnClickListener {
+            val playerIconImageView = findViewById<ImageView>(R.id.player_icon);
+
+            if (MusicPlayer.currentSongWithAlbumAndArtist == null) {
+                Snackbar.make(it, "You need to select a song", Snackbar.LENGTH_SHORT).show();
+            } else if (MusicPlayer.paused) {
+                MusicPlayer.playSong();
+                playerIconImageView.setImageResource(R.drawable.ic_baseline_pause_24);
+            } else {
+                MusicPlayer.pauseSong();
+                playerIconImageView.setImageResource(R.drawable.ic_baseline_play_arrow_24);
+            }
+        })
+
+        MusicPlayer?.currentSongWithAlbumAndArtist?.let { currentSongWithAlbumAndArtist ->
+            playlist?.playlistId?.let {
+                viewModel.getSongsWithAlbumAndArtistByPlaylistId(it).observe(this, Observer { songsWithAlbumAndArtist ->
+                    val index = songsWithAlbumAndArtist.indexOf(currentSongWithAlbumAndArtist);
+
+                    adapter.positionSelected = index;
+                    adapter.notifyDataSetChanged();
+                })
+            }
+        }
+
+        MusicPlayer?.currentSongWithAlbumAndArtist?.let {
+            val playerLinearLayout = findViewById<LinearLayout>(R.id.player_item);
+
+            val songNameTextView = playerLinearLayout.findViewById<TextView>(R.id.song_name);
+            val songArtistTextView = playerLinearLayout.findViewById<TextView>(R.id.song_artist);
+
+            songNameTextView.text = it?.song?.name;
+            songArtistTextView.text = it?.albumAndArtist?.artist?.name;
+
+            val playerIconImageView = findViewById<ImageView>(R.id.player_icon);
+
+            if (MusicPlayer.paused) {
+                playerIconImageView.setImageResource(R.drawable.ic_baseline_play_arrow_24);
+            } else {
+                playerIconImageView.setImageResource(R.drawable.ic_baseline_pause_24);
+            }
+        }
     }
 
-    private fun showMenu(view: View, @MenuRes menuRes: Int, songWithAlbumAndArtist: SongWithAlbumAndArtist) {
+    private fun showMenu(
+        view: View,
+        @MenuRes menuRes: Int,
+        songWithAlbumAndArtist: SongWithAlbumAndArtist
+    ) {
         val popup = PopupMenu(this, view)
         popup.menuInflater.inflate(menuRes, popup.menu)
 
@@ -159,5 +204,10 @@ class PlaylistSongsActivity : AppCompatActivity() {
             ?.add(android.R.id.content, newFragment)
             ?.addToBackStack(null)
             ?.commit()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
     }
 }

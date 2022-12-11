@@ -13,6 +13,7 @@ import java.io.File
 class PlaylistSongsViewModel(val database: MusicDatabaseDao,
                              application: Application
 ) : AndroidViewModel(application) {
+
     fun getSongsWithAlbumAndArtistByPlaylistId(playlistId: Long): LiveData<List<SongWithAlbumAndArtist>> {
         val result = MutableLiveData<List<SongWithAlbumAndArtist>>();
 

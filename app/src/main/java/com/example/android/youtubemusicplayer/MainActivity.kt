@@ -1,11 +1,13 @@
 package com.example.android.youtubemusicplayer
 
 import android.content.Intent
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -20,6 +22,8 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
 class MainActivity : AppCompatActivity() {
+
+    lateinit var playerLinearLayout: LinearLayout;
 
     private lateinit var viewModel: MainViewModel
 
@@ -66,12 +70,12 @@ class MainActivity : AppCompatActivity() {
         }
         tabLayoutMediator.attach()
 
-        val playerLinearLayout = findViewById<LinearLayout>(R.id.player_item);
+        playerLinearLayout = findViewById<LinearLayout>(R.id.player_item);
 
         playerLinearLayout.setOnClickListener(View.OnClickListener {
             val playerIconImageView = findViewById<ImageView>(R.id.player_icon);
 
-            if (MusicPlayer.currentSong == null) {
+            if (MusicPlayer.currentSongWithAlbumAndArtist == null) {
                 Snackbar.make(it, "You need to select a song", Snackbar.LENGTH_SHORT).show();
             } else if (MusicPlayer.paused) {
                 MusicPlayer.playSong();
@@ -92,5 +96,23 @@ class MainActivity : AppCompatActivity() {
         }
     })
 
+    override fun onResume() {
+        super.onResume()
 
+        MusicPlayer?.currentSongWithAlbumAndArtist?.let {
+            val songNameTextView = playerLinearLayout.findViewById<TextView>(R.id.song_name);
+            val songArtistTextView = playerLinearLayout.findViewById<TextView>(R.id.song_artist);
+
+            songNameTextView.text = it?.song?.name;
+            songArtistTextView.text = it?.albumAndArtist?.artist?.name;
+
+            val playerIconImageView = findViewById<ImageView>(R.id.player_icon);
+
+            if (MusicPlayer.paused) {
+                playerIconImageView.setImageResource(R.drawable.ic_baseline_play_arrow_24);
+            } else {
+                playerIconImageView.setImageResource(R.drawable.ic_baseline_pause_24);
+            }
+        }
+    }
 }

@@ -14,17 +14,16 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android.youtubemusicplayer.MusicPlayer
 import com.example.android.youtubemusicplayer.R
-import com.example.android.youtubemusicplayer.database.Song
 import com.example.android.youtubemusicplayer.database.MusicDatabase
-import com.example.android.youtubemusicplayer.database.Playlist
+import com.example.android.youtubemusicplayer.database.Song
 import com.example.android.youtubemusicplayer.database.SongWithAlbumAndArtist
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.textfield.TextInputEditText
 
 class SongsFragment : Fragment() {
 
-    private lateinit var viewModel: SongsViewModel
+    lateinit var adapter: SongsAdapter;
+
+    private lateinit var viewModel: SongsViewModel;
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,9 +41,9 @@ class SongsFragment : Fragment() {
         viewModel = ViewModelProvider(this, viewModelFactory)
             .get(SongsViewModel::class.java);
 
-        val adapter = SongsAdapter();
+        adapter = SongsAdapter();
 
-        viewModel.songWithAlbumAndArtist.observe(viewLifecycleOwner, Observer {
+        viewModel.songsWithAlbumAndArtist.observe(viewLifecycleOwner, Observer {
             it?.let {
                 adapter.submitList(it);
             }
@@ -63,7 +62,7 @@ class SongsFragment : Fragment() {
         }
 
         adapter.onItemSelected = { songWithAlbumAndArtist: SongWithAlbumAndArtist ->
-            MusicPlayer.playSong(songWithAlbumAndArtist.song);
+            MusicPlayer.playSong(songWithAlbumAndArtist);
 
             val playerLinearLayout = activity?.findViewById<LinearLayout>(R.id.player_item);
 
@@ -136,5 +135,18 @@ class SongsFragment : Fragment() {
             ?.add(android.R.id.content, newFragment)
             ?.addToBackStack(null)
             ?.commit()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        MusicPlayer?.currentSongWithAlbumAndArtist?.let { currentSongWithAlbumAndArtist ->
+
+            viewModel.songsWithAlbumAndArtist.observe(viewLifecycleOwner, Observer { songsWithAlbumAndArtist ->
+                val index = songsWithAlbumAndArtist.indexOf(currentSongWithAlbumAndArtist);
+
+                adapter.positionSelected = index;
+                adapter.notifyDataSetChanged();
+            })
+        }
     }
 }
