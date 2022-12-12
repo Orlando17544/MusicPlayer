@@ -8,7 +8,29 @@ object MusicPlayer {
     var mediaplayer = MediaPlayer();
     var currentSongWithAlbumAndArtist: SongWithAlbumAndArtist? = null;
 
-    var paused = true;
+    fun isPaused(): Boolean {
+        if (isPlaying() || isCompleted()) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    fun isCompleted(): Boolean {
+        if (mediaplayer.currentPosition.equals(mediaplayer.duration)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    fun isPlaying(): Boolean {
+        if (mediaplayer.isPlaying) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     private fun prepareSong(songWithAlbumAndArtist: SongWithAlbumAndArtist) {
         currentSongWithAlbumAndArtist = songWithAlbumAndArtist;
@@ -34,11 +56,11 @@ object MusicPlayer {
             songWithAlbumAndArtist?.let { prepareSong(it) };
         }
         startSong();
-        paused = false;
+        //paused = false;
     }
 
     fun pauseSong() {
         mediaplayer.pause();
-        paused = true;
+        //paused = true;
     }
 }

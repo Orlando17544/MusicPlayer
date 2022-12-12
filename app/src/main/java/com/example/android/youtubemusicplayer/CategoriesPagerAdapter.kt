@@ -15,15 +15,32 @@ class CategoriesPagerAdapter(fragmentActivity: FragmentActivity) : FragmentState
     }
 
     override fun createFragment(position: Int): Fragment {
-        var fragment: Fragment? = null
-        when (position) {
-            0 -> fragment = SongsFragment()
-            1 -> fragment = PlaylistFragment()
-            2 -> fragment = AlbumsFragment()
-            3 -> fragment = ArtistsFragment()
-            4 -> fragment = GenresFragment()
-        }
 
-        return if (fragment != null) fragment else Fragment();
+        when (position) {
+            0 -> {
+                val fragment: SongsFragment = SongsFragment();
+                return fragment;
+            }
+            1 -> {
+                val fragment = PlaylistFragment();
+                return fragment;
+            }
+            2 -> {
+                val fragment = AlbumsFragment();
+                return fragment;
+            }
+            3 -> {
+                val fragment = ArtistsFragment();
+                return fragment;
+            }
+            4 -> {
+                val fragment = GenresFragment();
+                return fragment
+            }
+            else -> {
+                val fragment = Fragment();
+                return fragment
+            }
+        }
     }
 }

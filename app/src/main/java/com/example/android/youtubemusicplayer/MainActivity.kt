@@ -12,6 +12,7 @@ import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.example.android.youtubemusicplayer.database.MusicDatabase
@@ -77,12 +78,12 @@ class MainActivity : AppCompatActivity() {
 
             if (MusicPlayer.currentSongWithAlbumAndArtist == null) {
                 Snackbar.make(it, "You need to select a song", Snackbar.LENGTH_SHORT).show();
-            } else if (MusicPlayer.paused) {
-                MusicPlayer.playSong();
-                playerIconImageView.setImageResource(R.drawable.ic_baseline_pause_24);
-            } else {
+            } else if (MusicPlayer.isPlaying()) {
                 MusicPlayer.pauseSong();
                 playerIconImageView.setImageResource(R.drawable.ic_baseline_play_arrow_24);
+            } else {
+                MusicPlayer.playSong();
+                playerIconImageView.setImageResource(R.drawable.ic_baseline_pause_24);
             }
         })
     }
@@ -99,6 +100,8 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
+        val playerIconImageView = findViewById<ImageView>(R.id.player_icon);
+
         MusicPlayer?.currentSongWithAlbumAndArtist?.let {
             val songNameTextView = playerLinearLayout.findViewById<TextView>(R.id.song_name);
             val songArtistTextView = playerLinearLayout.findViewById<TextView>(R.id.song_artist);
@@ -106,13 +109,20 @@ class MainActivity : AppCompatActivity() {
             songNameTextView.text = it?.song?.name;
             songArtistTextView.text = it?.albumAndArtist?.artist?.name;
 
-            val playerIconImageView = findViewById<ImageView>(R.id.player_icon);
-
-            if (MusicPlayer.paused) {
-                playerIconImageView.setImageResource(R.drawable.ic_baseline_play_arrow_24);
-            } else {
+            if (MusicPlayer.isPlaying()) {
                 playerIconImageView.setImageResource(R.drawable.ic_baseline_pause_24);
+            } else {
+                playerIconImageView.setImageResource(R.drawable.ic_baseline_play_arrow_24);
             }
         }
+
+        MusicPlayer?.currentSongWithAlbumAndArtist?.let {
+            if (MusicPlayer.isPlaying()) {
+                MusicPlayer.mediaplayer.setOnCompletionListener(MediaPlayer.OnCompletionListener {
+                    playerIconImageView.setImageResource(R.drawable.ic_baseline_play_arrow_24);
+                })
+            }
+        }
+
     }
 }

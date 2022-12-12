@@ -1,6 +1,7 @@
 package com.example.android.youtubemusicplayer.songs
 
 import android.graphics.Color
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -21,9 +22,12 @@ import com.google.android.material.snackbar.Snackbar
 
 class SongsFragment : Fragment() {
 
+    lateinit var playerIconImageView: ImageView;
     lateinit var adapter: SongsAdapter;
 
     private lateinit var viewModel: SongsViewModel;
+
+    public var variable = "";
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -61,18 +65,25 @@ class SongsFragment : Fragment() {
             }
         }
 
+        val playerLinearLayout = activity?.findViewById<LinearLayout>(R.id.player_item);
+
+        playerIconImageView = playerLinearLayout?.findViewById<ImageView>(R.id.player_icon)!!;
+
         adapter.onItemSelected = { songWithAlbumAndArtist: SongWithAlbumAndArtist ->
             MusicPlayer.playSong(songWithAlbumAndArtist);
 
-            val playerLinearLayout = activity?.findViewById<LinearLayout>(R.id.player_item);
+            MusicPlayer.mediaplayer.setOnCompletionListener(MediaPlayer.OnCompletionListener {
+                playerIconImageView?.setImageResource(R.drawable.ic_baseline_play_arrow_24);
+
+                adapter.positionSelected = -1;
+                adapter.notifyDataSetChanged();
+            })
 
             val nameTextView = playerLinearLayout?.findViewById<TextView>(R.id.song_name);
             val artistTextView = playerLinearLayout?.findViewById<TextView>(R.id.song_artist);
 
             nameTextView?.text = songWithAlbumAndArtist.song.name;
             artistTextView?.text = songWithAlbumAndArtist.albumAndArtist?.artist?.name;
-
-            val playerIconImageView = playerLinearLayout?.findViewById<ImageView>(R.id.player_icon);
 
             playerIconImageView?.setImageResource(R.drawable.ic_baseline_pause_24);
         }
@@ -117,7 +128,7 @@ class SongsFragment : Fragment() {
     }
 
     fun showDialog(songWithAlbumAndArtist: SongWithAlbumAndArtist) {
-        val fragmentManager = activity?.supportFragmentManager
+        val fragmentManager = parentFragmentManager
         val newFragment = SongsEditFragment()
 
         val args = Bundle();
@@ -142,11 +153,28 @@ class SongsFragment : Fragment() {
         MusicPlayer?.currentSongWithAlbumAndArtist?.let { currentSongWithAlbumAndArtist ->
 
             viewModel.songsWithAlbumAndArtist.observe(viewLifecycleOwner, Observer { songsWithAlbumAndArtist ->
-                val index = songsWithAlbumAndArtist.indexOf(currentSongWithAlbumAndArtist);
+                if (MusicPlayer.isPlaying()) {
+                    val index = songsWithAlbumAndArtist.indexOf(currentSongWithAlbumAndArtist);
 
-                adapter.positionSelected = index;
-                adapter.notifyDataSetChanged();
+                    adapter.positionSelected = index;
+                    adapter.notifyDataSetChanged();
+                } else {
+                    adapter.positionSelected = -1;
+                    adapter.notifyDataSetChanged();
+                }
             })
         }
+
+        MusicPlayer?.currentSongWithAlbumAndArtist?.let {
+            if (MusicPlayer.isPlaying()) {
+                MusicPlayer.mediaplayer.setOnCompletionListener(MediaPlayer.OnCompletionListener {
+                    playerIconImageView.setImageResource(R.drawable.ic_baseline_play_arrow_24);
+
+                    adapter.positionSelected = -1;
+                    adapter.notifyDataSetChanged();
+                })
+            }
+        }
+
     }
 }

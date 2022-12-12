@@ -132,23 +132,25 @@ class PlaylistSongsActivity : AppCompatActivity() {
 
             if (MusicPlayer.currentSongWithAlbumAndArtist == null) {
                 Snackbar.make(it, "You need to select a song", Snackbar.LENGTH_SHORT).show();
-            } else if (MusicPlayer.paused) {
-                MusicPlayer.playSong();
-                playerIconImageView.setImageResource(R.drawable.ic_baseline_pause_24);
-            } else {
+            } else if (MusicPlayer.isPlaying()) {
                 MusicPlayer.pauseSong();
                 playerIconImageView.setImageResource(R.drawable.ic_baseline_play_arrow_24);
+            } else {
+                MusicPlayer.playSong();
+                playerIconImageView.setImageResource(R.drawable.ic_baseline_pause_24);
             }
         })
 
         MusicPlayer?.currentSongWithAlbumAndArtist?.let { currentSongWithAlbumAndArtist ->
             playlist?.playlistId?.let {
                 viewModel.getSongsWithAlbumAndArtistByPlaylistId(it).observe(this, Observer { songsWithAlbumAndArtist ->
-                    val index = songsWithAlbumAndArtist.indexOf(currentSongWithAlbumAndArtist);
+                    if (MusicPlayer.isPlaying()) {
+                        val index = songsWithAlbumAndArtist.indexOf(currentSongWithAlbumAndArtist);
 
-                    if (index != -1) {
-                        adapter.positionSelected = index;
-                        adapter.notifyDataSetChanged();
+                        if (index != -1) {
+                            adapter.positionSelected = index;
+                            adapter.notifyDataSetChanged();
+                        }
                     }
                 })
             }
@@ -163,12 +165,24 @@ class PlaylistSongsActivity : AppCompatActivity() {
             songNameTextView.text = it?.song?.name;
             songArtistTextView.text = it?.albumAndArtist?.artist?.name;
 
-            if (MusicPlayer.paused) {
-                playerIconImageView.setImageResource(R.drawable.ic_baseline_play_arrow_24);
-            } else {
+            if (MusicPlayer.isPlaying()) {
                 playerIconImageView.setImageResource(R.drawable.ic_baseline_pause_24);
+            } else {
+                playerIconImageView.setImageResource(R.drawable.ic_baseline_play_arrow_24);
             }
         }
+
+        MusicPlayer?.currentSongWithAlbumAndArtist?.let {
+            if (MusicPlayer.isPlaying()) {
+                MusicPlayer.mediaplayer.setOnCompletionListener(MediaPlayer.OnCompletionListener {
+                    playerIconImageView.setImageResource(R.drawable.ic_baseline_play_arrow_24);
+
+                    adapter.positionSelected = -1;
+                    adapter.notifyDataSetChanged();
+                })
+            }
+        }
+
     }
 
     private fun showMenu(
