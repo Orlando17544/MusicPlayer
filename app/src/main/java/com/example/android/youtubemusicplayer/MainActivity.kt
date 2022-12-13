@@ -50,6 +50,10 @@ class MainActivity : AppCompatActivity() {
                     val intent = Intent(this@MainActivity, DownloadMusicActivity::class.java)
                     launcher.launch(intent);
                 }
+                R.id.search_songs -> {
+                    val intent = Intent(this@MainActivity, SearchSongsActivity::class.java)
+                    startActivity(intent);
+                }
             }
             false
         })

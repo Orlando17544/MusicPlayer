@@ -7,4 +7,10 @@
         android:title="@string/download_music"
         android:contentDescription="@string/content_description_download_music"
         app:showAsAction="ifRoom" />
+
+    <item android:id="@+id/search_songs"
+        android:icon="@drawable/ic_baseline_search_24"
+        android:title="@string/search_songs"
+        android:contentDescription="@string/content_description_search_songs"
+        app:showAsAction="ifRoom" />
 </menu>

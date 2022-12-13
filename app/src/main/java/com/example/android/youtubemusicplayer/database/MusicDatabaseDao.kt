@@ -31,6 +31,10 @@ interface MusicDatabaseDao {
     fun getSongWithAlbumAndArtist(): LiveData<List<SongWithAlbumAndArtist>>
 
     @Transaction
+    @Query("SELECT * FROM songs_table WHERE name LIKE '%' || :search || '%'")
+    suspend fun getSongsWithAlbumAndArtistByName(search: String): List<SongWithAlbumAndArtist>
+
+    @Transaction
     @Query("SELECT * FROM songs_table WHERE playlistContainerId = :playlistId")
     suspend fun getSongWithAlbumAndArtistByPlaylistId(playlistId: Long): List<SongWithAlbumAndArtist>
 

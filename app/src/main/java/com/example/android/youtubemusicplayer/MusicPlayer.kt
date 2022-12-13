@@ -56,11 +56,9 @@ object MusicPlayer {
             songWithAlbumAndArtist?.let { prepareSong(it) };
         }
         startSong();
-        //paused = false;
     }
 
     fun pauseSong() {
         mediaplayer.pause();
-        //paused = true;
     }
 }

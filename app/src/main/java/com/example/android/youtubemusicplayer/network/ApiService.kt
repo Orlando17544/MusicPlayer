@@ -9,7 +9,7 @@ import retrofit2.http.Streaming
 import retrofit2.http.Url
 
 private const val BASE_URL =
-    "gs://musicplayer-2d048.appspot.com/"
+    "https://musicplayer-2d048.appspot.com/"
 
 private val retrofit = Retrofit.Builder()
     .addConverterFactory(ScalarsConverterFactory.create())

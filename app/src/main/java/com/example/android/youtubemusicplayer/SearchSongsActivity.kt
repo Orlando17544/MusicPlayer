@@ -1,107 +1,54 @@
 package com.example.android.youtubemusicplayer
 
-import android.content.Intent
 import android.graphics.Color
 import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Parcelable
 import android.view.View
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.PopupMenu
-import android.widget.TextView
+import android.widget.*
 import androidx.annotation.MenuRes
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android.youtubemusicplayer.database.*
 import com.example.android.youtubemusicplayer.songs.SongsAdapter
 import com.example.android.youtubemusicplayer.songs.SongsEditFragment
-import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.textfield.TextInputEditText
 
-class CategorySongsActivity : AppCompatActivity() {
+class SearchSongsActivity : AppCompatActivity() {
 
-    private lateinit var viewModel: CategorySongsViewModel;
+    private lateinit var viewModel: SearchSongsViewModel;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_category_songs)
+        setContentView(R.layout.activity_search)
 
-        var category = intent.extras?.getParcelable<Parcelable>("category");
+        val searchEditText = findViewById<TextInputEditText>(R.id.search_edit_text);
+        val backImageView = findViewById<ImageView>(R.id.back);
 
-        val topIcon = findViewById<ImageView>(R.id.top_icon);
+        backImageView.setOnClickListener(View.OnClickListener {
+            this.finish();
+        })
 
-        when (category) {
-            is Playlist -> topIcon.setImageResource(R.drawable.ic_baseline_library_music_24);
-            is Album -> topIcon.setImageResource(R.drawable.ic_baseline_album_24);
-            is Artist -> topIcon.setImageResource(R.drawable.ic_baseline_star_24);
-            is Genre -> topIcon.setImageResource(R.drawable.ic_baseline_music_note_24);
-        }
-
-        val topAppBar = findViewById<MaterialToolbar>(R.id.topAppBar);
-
-        topAppBar.setNavigationOnClickListener {
-            // Handle navigation icon press
-            finish();
-        }
-
-        topAppBar.setOnMenuItemClickListener { menuItem ->
-            when (menuItem.itemId) {
-                R.id.search_songs -> {
-                    val intent = Intent(this, SearchSongsActivity::class.java);
-                    startActivity(intent);
-                    true
-                }
-
-                else -> false
-            }
-        }
-
-        lateinit var name: String;
-
-        when (category) {
-            is Playlist -> name = category.name;
-            is Album -> name = category.name;
-            is Artist -> name = category.name;
-            is Genre -> name = category.name;
-        }
-
-        topAppBar.title = name;
+        searchEditText.requestFocus();
 
         val application = requireNotNull(this).application;
 
         val dataSource = MusicDatabase.getInstance(application).musicDatabaseDao;
 
-        val viewModelFactory = CategorySongsViewModelFactory(dataSource, application);
+        val viewModelFactory = SearchSongsViewModelFactory(dataSource, application);
 
         viewModel = ViewModelProvider(this, viewModelFactory)
-            .get(CategorySongsViewModel::class.java);
+            .get(SearchSongsViewModel::class.java);
 
         val adapter = SongsAdapter();
 
-        when (category) {
-            is Playlist -> {
-                viewModel.getSongsWithAlbumAndArtistByPlaylistId(category.playlistId).observe(this, androidx.lifecycle.Observer {
-                    adapter.submitList(it);
-                })
-            }
-            is Album -> {
-                viewModel.getSongsWithAlbumAndArtistByAlbumId(category.albumId).observe(this, androidx.lifecycle.Observer {
-                    adapter.submitList(it);
-                })
-            }
-            is Artist -> {
-                viewModel.getSongsWithAlbumAndArtistByArtistId(category.artistId).observe(this, androidx.lifecycle.Observer {
-                    adapter.submitList(it);
-                })
-            }
-            is Genre -> {
-                viewModel.getSongsWithAlbumAndArtistByGenreId(category.genreId).observe(this, androidx.lifecycle.Observer {
-                    adapter.submitList(it);
-                })
-            }
+        searchEditText.doOnTextChanged { text, start, before, count ->
+            viewModel.getSongsWithAlbumAndArtistByName(text.toString()).observe(this, androidx.lifecycle.Observer {
+                adapter.submitList(it);
+            })
         }
 
         adapter.onItemChange = { itemView: View, position: Int, positionSelected: Int ->
@@ -174,56 +121,16 @@ class CategorySongsActivity : AppCompatActivity() {
         })
 
         MusicPlayer?.currentSongWithAlbumAndArtist?.let { currentSongWithAlbumAndArtist ->
-            when (category) {
-                is Playlist -> {
-                    viewModel.getSongsWithAlbumAndArtistByPlaylistId(category.playlistId).observe(this, androidx.lifecycle.Observer { songsWithAlbumAndArtist ->
-                        if (MusicPlayer.isPlaying()) {
-                            val index = songsWithAlbumAndArtist.indexOf(currentSongWithAlbumAndArtist);
+            viewModel.database.getSongWithAlbumAndArtist().observe(this, androidx.lifecycle.Observer { songsWithAlbumAndArtist ->
+                if (MusicPlayer.isPlaying()) {
+                    val index = songsWithAlbumAndArtist.indexOf(currentSongWithAlbumAndArtist);
 
-                            if (index != -1) {
-                                adapter.positionSelected = index;
-                                adapter.notifyDataSetChanged();
-                            }
-                        }
-                    })
+                    if (index != -1) {
+                        adapter.positionSelected = index;
+                        adapter.notifyDataSetChanged();
+                    }
                 }
-                is Album -> {
-                    viewModel.getSongsWithAlbumAndArtistByAlbumId(category.albumId).observe(this, androidx.lifecycle.Observer { songsWithAlbumAndArtist ->
-                        if (MusicPlayer.isPlaying()) {
-                            val index = songsWithAlbumAndArtist.indexOf(currentSongWithAlbumAndArtist);
-
-                            if (index != -1) {
-                                adapter.positionSelected = index;
-                                adapter.notifyDataSetChanged();
-                            }
-                        }
-                    })
-                }
-                is Artist -> {
-                    viewModel.getSongsWithAlbumAndArtistByArtistId(category.artistId).observe(this, androidx.lifecycle.Observer { songsWithAlbumAndArtist ->
-                        if (MusicPlayer.isPlaying()) {
-                            val index = songsWithAlbumAndArtist.indexOf(currentSongWithAlbumAndArtist);
-
-                            if (index != -1) {
-                                adapter.positionSelected = index;
-                                adapter.notifyDataSetChanged();
-                            }
-                        }
-                    })
-                }
-                is Genre -> {
-                    viewModel.getSongsWithAlbumAndArtistByGenreId(category.genreId).observe(this, androidx.lifecycle.Observer { songsWithAlbumAndArtist ->
-                        if (MusicPlayer.isPlaying()) {
-                            val index = songsWithAlbumAndArtist.indexOf(currentSongWithAlbumAndArtist);
-
-                            if (index != -1) {
-                                adapter.positionSelected = index;
-                                adapter.notifyDataSetChanged();
-                            }
-                        }
-                    })
-                }
-            }
+            })
         }
 
         MusicPlayer?.currentSongWithAlbumAndArtist?.let {

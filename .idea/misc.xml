@@ -10,6 +10,7 @@
         <entry key="app/src/main/res/drawable/ic_baseline_music_note_24.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_baseline_pause_24.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_baseline_play_arrow_24.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_baseline_search_24.xml" value="0.12" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_album_songs.xml" value="0.1431159420289855" />
         <entry key="app/src/main/res/layout/activity_artist_songs.xml" value="0.1431159420289855" />
@@ -18,6 +19,7 @@
         <entry key="app/src/main/res/layout/activity_download_music.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_playlist_songs.xml" value="0.23177083333333334" />
+        <entry key="app/src/main/res/layout/activity_search.xml" value="0.23072916666666668" />
         <entry key="app/src/main/res/layout/add_edit_album.xml" value="0.10663627152988855" />
         <entry key="app/src/main/res/layout/add_edit_gender.xml" value="0.1" />
         <entry key="app/src/main/res/layout/add_edit_playlist.xml" value="0.1" />
