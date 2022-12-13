@@ -12,12 +12,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.android.youtubemusicplayer.R
 import com.example.android.youtubemusicplayer.albums.AlbumsDiffCallback
 import com.example.android.youtubemusicplayer.database.Album
+import com.example.android.youtubemusicplayer.database.Artist
 import com.example.android.youtubemusicplayer.database.ArtistWithAlbums
 import com.example.android.youtubemusicplayer.database.PlaylistWithSongs
 
 class ArtistsAdapter: ListAdapter<ArtistWithAlbums, ArtistsAdapter.ArtistsViewHolder>(
     ArtistsDiffCallback()
 ) {
+
+    lateinit var onItemSelected: ((artist: Artist) -> Unit);
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArtistsViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         val view = layoutInflater.inflate(R.layout.artist_item, parent, false) as LinearLayout
@@ -43,12 +47,11 @@ class ArtistsAdapter: ListAdapter<ArtistWithAlbums, ArtistsAdapter.ArtistsViewHo
             holder.itemView.findViewById<TextView>(R.id.artist_name).text = item?.artist?.name;
         }
 
-        /*
-        holder.itemView.findViewById<LinearLayout>(R.id.clickable_playlist)
+        holder.itemView.findViewById<LinearLayout>(R.id.clickable_artist)
             .setOnClickListener(View.OnClickListener {
-                print("algo")
+                onItemSelected.invoke(item.artist);
             })
-         */
+
     }
 
     class ArtistsViewHolder(linearLayout: LinearLayout): RecyclerView.ViewHolder(linearLayout) {

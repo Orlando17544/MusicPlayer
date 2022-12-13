@@ -38,6 +38,12 @@ interface MusicDatabaseDao {
     @Query("SELECT * FROM songs_table WHERE albumContainerId = :albumId")
     suspend fun getSongWithAlbumAndArtistByAlbumId(albumId: Long): List<SongWithAlbumAndArtist>
 
+    @Transaction
+    @Query("SELECT * FROM songs_table " +
+            "INNER JOIN albums_table ON albumId = albumContainerId " +
+            "WHERE artistContainerId = :artistId")
+    suspend fun getSongWithAlbumAndArtistByArtistId(artistId: Long): List<SongWithAlbumAndArtist>
+
     @Insert
     suspend fun insertPlaylist(playlist: Playlist)
 
