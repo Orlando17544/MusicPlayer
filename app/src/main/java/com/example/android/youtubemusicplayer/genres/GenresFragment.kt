@@ -1,5 +1,6 @@
 package com.example.android.youtubemusicplayer.genres
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -12,9 +13,11 @@ import androidx.annotation.MenuRes
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
+import com.example.android.youtubemusicplayer.CategorySongsActivity
 import com.example.android.youtubemusicplayer.R
 import com.example.android.youtubemusicplayer.database.Genre
 import com.example.android.youtubemusicplayer.database.MusicDatabase
+import com.example.android.youtubemusicplayer.database.Playlist
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
@@ -72,6 +75,12 @@ class GenresFragment : Fragment() {
                 }
                 .show();
         })
+
+        adapter.onItemSelected = { genre: Genre ->
+            val intent = Intent(this.activity, CategorySongsActivity::class.java);
+            intent.putExtra("category", genre);
+            context?.startActivity(intent);
+        }
 
         adapter.onOptionsSelected = { view: View, menuRes: Int, genre: Genre ->
             showMenu(view, R.menu.menu_genre, genre);

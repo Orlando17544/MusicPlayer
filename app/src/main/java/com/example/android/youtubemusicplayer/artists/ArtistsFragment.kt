@@ -6,24 +6,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
-import android.widget.ImageView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.android.youtubemusicplayer.CategorySongsActivity
 import com.example.android.youtubemusicplayer.R
-import com.example.android.youtubemusicplayer.albums.AlbumSongsActivity
-import com.example.android.youtubemusicplayer.albums.AlbumsAdapter
-import com.example.android.youtubemusicplayer.albums.AlbumsViewModel
-import com.example.android.youtubemusicplayer.albums.AlbumsViewModelFactory
-import com.example.android.youtubemusicplayer.database.Album
 import com.example.android.youtubemusicplayer.database.Artist
 import com.example.android.youtubemusicplayer.database.MusicDatabase
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.textfield.TextInputEditText
 
 class ArtistsFragment : Fragment() {
 
@@ -58,8 +47,8 @@ class ArtistsFragment : Fragment() {
         recyclerView.adapter = adapter;
 
         adapter.onItemSelected = { artist: Artist ->
-            val intent = Intent(this.activity, ArtistSongs2Activity::class.java);
-            intent.putExtra("artist", artist);
+            val intent = Intent(this.activity, CategorySongsActivity::class.java);
+            intent.putExtra("category", artist);
             context?.startActivity(intent);
         }
 

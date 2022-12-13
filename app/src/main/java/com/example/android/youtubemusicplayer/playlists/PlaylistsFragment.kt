@@ -12,6 +12,7 @@ import androidx.annotation.MenuRes
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
+import com.example.android.youtubemusicplayer.CategorySongsActivity
 import com.example.android.youtubemusicplayer.R
 import com.example.android.youtubemusicplayer.database.MusicDatabase
 import com.example.android.youtubemusicplayer.database.Playlist
@@ -76,8 +77,8 @@ class PlaylistFragment : Fragment() {
         })
 
         adapter.onItemSelected = { playlist: Playlist ->
-            val intent = Intent(this.activity, PlaylistSongsActivity::class.java);
-            intent.putExtra("playlist", playlist);
+            val intent = Intent(this.activity, CategorySongsActivity::class.java);
+            intent.putExtra("category", playlist);
             context?.startActivity(intent);
         }
 

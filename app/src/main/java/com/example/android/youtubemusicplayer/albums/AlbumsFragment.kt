@@ -12,11 +12,11 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.android.youtubemusicplayer.CategorySongsActivity
 import com.example.android.youtubemusicplayer.R
 import com.example.android.youtubemusicplayer.database.Album
 import com.example.android.youtubemusicplayer.database.AlbumAndArtist
 import com.example.android.youtubemusicplayer.database.MusicDatabase
-import com.example.android.youtubemusicplayer.playlists.PlaylistSongsActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
@@ -88,8 +88,8 @@ class AlbumsFragment : Fragment() {
         })
 
         adapter.onItemSelected = { album: Album ->
-            val intent = Intent(this.activity, AlbumSongsActivity::class.java);
-            intent.putExtra("album", album);
+            val intent = Intent(this.activity, CategorySongsActivity::class.java);
+            intent.putExtra("category", album);
             context?.startActivity(intent);
         }
 

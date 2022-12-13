@@ -12,10 +12,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.android.youtubemusicplayer.R
 import com.example.android.youtubemusicplayer.database.GenreWithSongs
 import com.example.android.youtubemusicplayer.database.Genre
+import com.example.android.youtubemusicplayer.database.Playlist
 
 class GenresAdapter: ListAdapter<GenreWithSongs, GenresAdapter.GenresViewHolder>(
     GenresDiffCallback()
 ) {
+    lateinit var onItemSelected: ((genre: Genre) -> Unit);
     lateinit var onOptionsSelected: ((view: View, menuRes: Int, genre: Genre) -> Unit);
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GenresViewHolder {
@@ -45,7 +47,7 @@ class GenresAdapter: ListAdapter<GenreWithSongs, GenresAdapter.GenresViewHolder>
 
         holder.itemView.findViewById<LinearLayout>(R.id.clickable_genre)
             .setOnClickListener(View.OnClickListener {
-                print("algo")
+                onItemSelected.invoke(item.genre);
             })
 
         holder.itemView.findViewById<ImageView>(R.id.genre_options)

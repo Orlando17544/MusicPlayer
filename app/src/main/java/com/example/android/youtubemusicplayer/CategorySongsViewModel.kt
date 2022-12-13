@@ -1,4 +1,4 @@
-package com.example.android.youtubemusicplayer.artists
+package com.example.android.youtubemusicplayer
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
@@ -10,15 +10,50 @@ import com.example.android.youtubemusicplayer.database.SongWithAlbumAndArtist
 import kotlinx.coroutines.launch
 import java.io.File
 
-class ArtistSongs2ViewModel(val database: MusicDatabaseDao,
-                            application: Application
+class CategorySongsViewModel(val database: MusicDatabaseDao,
+                             application: Application
 ) : AndroidViewModel(application) {
+    fun getSongsWithAlbumAndArtistByPlaylistId(playlistId: Long): LiveData<List<SongWithAlbumAndArtist>> {
+        val result = MutableLiveData<List<SongWithAlbumAndArtist>>();
+
+        viewModelScope.launch {
+            val songsWithAlbumAndArtist = database.getSongWithAlbumAndArtistByPlaylistId(playlistId);
+
+            result.value = songsWithAlbumAndArtist;
+        }
+
+        return result;
+    }
+
+    fun getSongsWithAlbumAndArtistByAlbumId(albumId: Long): LiveData<List<SongWithAlbumAndArtist>> {
+        val result = MutableLiveData<List<SongWithAlbumAndArtist>>();
+
+        viewModelScope.launch {
+            val songsWithAlbumAndArtist = database.getSongWithAlbumAndArtistByAlbumId(albumId);
+
+            result.value = songsWithAlbumAndArtist;
+        }
+
+        return result;
+    }
 
     fun getSongsWithAlbumAndArtistByArtistId(albumId: Long): LiveData<List<SongWithAlbumAndArtist>> {
         val result = MutableLiveData<List<SongWithAlbumAndArtist>>();
 
         viewModelScope.launch {
             val songsWithAlbumAndArtist = database.getSongWithAlbumAndArtistByAlbumId(albumId);
+
+            result.value = songsWithAlbumAndArtist;
+        }
+
+        return result;
+    }
+
+    fun getSongsWithAlbumAndArtistByGenreId(genreId: Long): LiveData<List<SongWithAlbumAndArtist>> {
+        val result = MutableLiveData<List<SongWithAlbumAndArtist>>();
+
+        viewModelScope.launch {
+            val songsWithAlbumAndArtist = database.getSongWithAlbumAndArtistByGenreId(genreId);
 
             result.value = songsWithAlbumAndArtist;
         }

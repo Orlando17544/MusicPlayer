@@ -13,6 +13,8 @@
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_album_songs.xml" value="0.1431159420289855" />
         <entry key="app/src/main/res/layout/activity_artist_songs.xml" value="0.1431159420289855" />
+        <entry key="app/src/main/res/layout/activity_artist_songs2.xml" value="0.25625" />
+        <entry key="app/src/main/res/layout/activity_category_songs.xml" value="0.1431159420289855" />
         <entry key="app/src/main/res/layout/activity_download_music.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_playlist_songs.xml" value="0.23177083333333334" />

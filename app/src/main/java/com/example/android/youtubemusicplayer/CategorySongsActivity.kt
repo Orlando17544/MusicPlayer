@@ -1,38 +1,44 @@
-package com.example.android.youtubemusicplayer.playlists
+package com.example.android.youtubemusicplayer
 
 import android.content.Intent
 import android.graphics.Color
 import android.media.MediaPlayer
-import android.os.Bundle
-import android.view.View
-import android.widget.*
-import androidx.annotation.MenuRes
 import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import android.os.Parcelable
+import android.view.View
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.PopupMenu
+import android.widget.TextView
+import androidx.annotation.MenuRes
 import androidx.fragment.app.FragmentTransaction
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
-import com.example.android.youtubemusicplayer.MusicPlayer
-import com.example.android.youtubemusicplayer.R
-import com.example.android.youtubemusicplayer.SearchActivity
-import com.example.android.youtubemusicplayer.database.MusicDatabase
-import com.example.android.youtubemusicplayer.database.Playlist
-import com.example.android.youtubemusicplayer.database.Song
-import com.example.android.youtubemusicplayer.database.SongWithAlbumAndArtist
+import com.example.android.youtubemusicplayer.database.*
 import com.example.android.youtubemusicplayer.songs.SongsAdapter
 import com.example.android.youtubemusicplayer.songs.SongsEditFragment
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.snackbar.Snackbar
 
-class PlaylistSongsActivity : AppCompatActivity() {
+class CategorySongsActivity : AppCompatActivity() {
 
-    private lateinit var viewModel: PlaylistSongsViewModel
+    private lateinit var viewModel: CategorySongsViewModel;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_playlist_songs)
+        setContentView(R.layout.activity_category_songs)
 
-        val playlist = intent.extras?.getParcelable<Playlist>("playlist");
+        var category = intent.extras?.getParcelable<Parcelable>("category");
+
+        val topIcon = findViewById<ImageView>(R.id.top_icon);
+
+        when (category) {
+            is Playlist -> topIcon.setImageResource(R.drawable.ic_baseline_library_music_24);
+            is Album -> topIcon.setImageResource(R.drawable.ic_baseline_album_24);
+            is Artist -> topIcon.setImageResource(R.drawable.ic_baseline_star_24);
+            is Genre -> topIcon.setImageResource(R.drawable.ic_baseline_music_note_24);
+        }
 
         val topAppBar = findViewById<MaterialToolbar>(R.id.topAppBar);
 
@@ -53,25 +59,49 @@ class PlaylistSongsActivity : AppCompatActivity() {
             }
         }
 
-        topAppBar.title = playlist?.name;
+        lateinit var name: String;
+
+        when (category) {
+            is Playlist -> name = category.name;
+            is Album -> name = category.name;
+            is Artist -> name = category.name;
+            is Genre -> name = category.name;
+        }
+
+        topAppBar.title = name;
 
         val application = requireNotNull(this).application;
 
         val dataSource = MusicDatabase.getInstance(application).musicDatabaseDao;
 
-        val viewModelFactory = PlaylistSongsViewModelFactory(dataSource, application);
+        val viewModelFactory = CategorySongsViewModelFactory(dataSource, application);
 
         viewModel = ViewModelProvider(this, viewModelFactory)
-            .get(PlaylistSongsViewModel::class.java);
+            .get(CategorySongsViewModel::class.java);
 
         val adapter = SongsAdapter();
 
-        playlist?.playlistId?.let {
-            viewModel.getSongsWithAlbumAndArtistByPlaylistId(it).observe(this, Observer {
-                it?.let {
+        when (category) {
+            is Playlist -> {
+                viewModel.getSongsWithAlbumAndArtistByPlaylistId(category.playlistId).observe(this, androidx.lifecycle.Observer {
                     adapter.submitList(it);
-                }
-            })
+                })
+            }
+            is Album -> {
+                viewModel.getSongsWithAlbumAndArtistByAlbumId(category.albumId).observe(this, androidx.lifecycle.Observer {
+                    adapter.submitList(it);
+                })
+            }
+            is Artist -> {
+                viewModel.getSongsWithAlbumAndArtistByArtistId(category.artistId).observe(this, androidx.lifecycle.Observer {
+                    adapter.submitList(it);
+                })
+            }
+            is Genre -> {
+                viewModel.getSongsWithAlbumAndArtistByGenreId(category.genreId).observe(this, androidx.lifecycle.Observer {
+                    adapter.submitList(it);
+                })
+            }
         }
 
         adapter.onItemChange = { itemView: View, position: Int, positionSelected: Int ->
@@ -144,17 +174,55 @@ class PlaylistSongsActivity : AppCompatActivity() {
         })
 
         MusicPlayer?.currentSongWithAlbumAndArtist?.let { currentSongWithAlbumAndArtist ->
-            playlist?.playlistId?.let {
-                viewModel.getSongsWithAlbumAndArtistByPlaylistId(it).observe(this, Observer { songsWithAlbumAndArtist ->
-                    if (MusicPlayer.isPlaying()) {
-                        val index = songsWithAlbumAndArtist.indexOf(currentSongWithAlbumAndArtist);
+            when (category) {
+                is Playlist -> {
+                    viewModel.getSongsWithAlbumAndArtistByPlaylistId(category.playlistId).observe(this, androidx.lifecycle.Observer { songsWithAlbumAndArtist ->
+                        if (MusicPlayer.isPlaying()) {
+                            val index = songsWithAlbumAndArtist.indexOf(currentSongWithAlbumAndArtist);
 
-                        if (index != -1) {
-                            adapter.positionSelected = index;
-                            adapter.notifyDataSetChanged();
+                            if (index != -1) {
+                                adapter.positionSelected = index;
+                                adapter.notifyDataSetChanged();
+                            }
                         }
-                    }
-                })
+                    })
+                }
+                is Album -> {
+                    viewModel.getSongsWithAlbumAndArtistByAlbumId(category.albumId).observe(this, androidx.lifecycle.Observer { songsWithAlbumAndArtist ->
+                        if (MusicPlayer.isPlaying()) {
+                            val index = songsWithAlbumAndArtist.indexOf(currentSongWithAlbumAndArtist);
+
+                            if (index != -1) {
+                                adapter.positionSelected = index;
+                                adapter.notifyDataSetChanged();
+                            }
+                        }
+                    })
+                }
+                is Artist -> {
+                    viewModel.getSongsWithAlbumAndArtistByArtistId(category.artistId).observe(this, androidx.lifecycle.Observer { songsWithAlbumAndArtist ->
+                        if (MusicPlayer.isPlaying()) {
+                            val index = songsWithAlbumAndArtist.indexOf(currentSongWithAlbumAndArtist);
+
+                            if (index != -1) {
+                                adapter.positionSelected = index;
+                                adapter.notifyDataSetChanged();
+                            }
+                        }
+                    })
+                }
+                is Genre -> {
+                    viewModel.getSongsWithAlbumAndArtistByGenreId(category.genreId).observe(this, androidx.lifecycle.Observer { songsWithAlbumAndArtist ->
+                        if (MusicPlayer.isPlaying()) {
+                            val index = songsWithAlbumAndArtist.indexOf(currentSongWithAlbumAndArtist);
+
+                            if (index != -1) {
+                                adapter.positionSelected = index;
+                                adapter.notifyDataSetChanged();
+                            }
+                        }
+                    })
+                }
             }
         }
 
@@ -184,7 +252,6 @@ class PlaylistSongsActivity : AppCompatActivity() {
                 })
             }
         }
-
     }
 
     private fun showMenu(
