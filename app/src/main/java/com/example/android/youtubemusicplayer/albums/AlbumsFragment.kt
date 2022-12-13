@@ -1,5 +1,6 @@
 package com.example.android.youtubemusicplayer.albums
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +16,7 @@ import com.example.android.youtubemusicplayer.R
 import com.example.android.youtubemusicplayer.database.Album
 import com.example.android.youtubemusicplayer.database.AlbumAndArtist
 import com.example.android.youtubemusicplayer.database.MusicDatabase
+import com.example.android.youtubemusicplayer.playlists.PlaylistSongsActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
@@ -84,6 +86,12 @@ class AlbumsFragment : Fragment() {
                 }
                 .show();
         })
+
+        adapter.onItemSelected = { album: Album ->
+            val intent = Intent(this.activity, AlbumSongsActivity::class.java);
+            intent.putExtra("album", album);
+            context?.startActivity(intent);
+        }
 
         adapter.onOptionsSelected = { view: View, menuRes: Int, albumAndArtist: AlbumAndArtist ->
             showMenu(view, R.menu.menu_album, albumAndArtist);

@@ -3,6 +3,7 @@ package com.example.android.youtubemusicplayer
 import android.app.Application
 import android.content.Context
 import android.content.ContextWrapper
+import android.net.Uri
 import android.os.Parcelable
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
@@ -12,19 +13,27 @@ import com.example.android.youtubemusicplayer.download_music.DownloadableSong
 import com.example.android.youtubemusicplayer.network.Api
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.tasks.await
+import okhttp3.Dispatcher
+import okhttp3.Response
 import okhttp3.ResponseBody
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
+import java.net.URI
+import java.net.URL
 
-class MainViewModel(val database: MusicDatabaseDao,
-                    application: Application) : AndroidViewModel(application) {
+class MainViewModel(
+    val database: MusicDatabaseDao,
+    application: Application
+) : AndroidViewModel(application) {
     fun onDownload(downloadableSongsSelectedParcelable: Array<Parcelable>) {
 
-        val downloadableSongsSelected = convertToDownloadableSong(downloadableSongsSelectedParcelable);
+        val downloadableSongsSelected =
+            convertToDownloadableSong(downloadableSongsSelectedParcelable);
         val storage = Firebase.storage
 
         for (downloadableSongSelected in downloadableSongsSelected) {
@@ -33,16 +42,20 @@ class MainViewModel(val database: MusicDatabaseDao,
 
             gsReference.downloadUrl.addOnSuccessListener {
                 // Got the download URL for 'users/me/profile.png'
+                print(it.toString());
                 viewModelScope.launch {
                     try {
-                        val responseBody = Api.retrofitService.downloadFile(it.toString()).body();
+                        val responseBody = withContext(Dispatchers.IO) {
+                            Api.retrofitService.downloadFile(it.toString())
+                                .body()
+                        }
                         val fileDirectory = generateDirectory(downloadableSongSelected);
                         val path = fileDirectory.absolutePath;
 
-                        val result = saveFile(responseBody, path);
+                        saveFile(responseBody, path);
                         insert(downloadableSongSelected, path);
                     } catch (e: Exception) {
-                        Log.e("error","Failure: ${e.message}");
+                        Log.e("error", "Failure: ${e.message}");
                     }
                 }
             }.addOnFailureListener {
@@ -59,35 +72,38 @@ class MainViewModel(val database: MusicDatabaseDao,
         return File(directory, downloadableSongSelected.name + ".mp3")
     }
 
-    suspend fun saveFile(body: ResponseBody?, pathWhereYouWantToSaveFile: String) : String {
-        if (body != null) body else ""
-        lateinit var input: InputStream
-        try {
-            input = body!!.byteStream();
+    suspend fun saveFile(body: ResponseBody?, pathWhereYouWantToSaveFile: String) {
+        withContext(Dispatchers.IO) {
+            lateinit var input: InputStream
 
-            val fos = FileOutputStream(pathWhereYouWantToSaveFile)
-            fos.use {
-                val buffer = ByteArray(4 * 1024) // or other buffer size
-                var read: Int
-                while (input.read(buffer).also { read = it } != -1) {
-                    it.write(buffer, 0, read)
+            body?.let {
+                try {
+                    input = body.byteStream();
+
+                    val fos = FileOutputStream(pathWhereYouWantToSaveFile)
+                    fos.use {
+                        val buffer = ByteArray(4 * 1024) // or other buffer size
+                        var read: Int
+                        while (input.read(buffer).also { read = it } != -1) {
+                            it.write(buffer, 0, read)
+                        }
+                        it.flush()
+                    }
+                    Log.e("Success", "");
+                } catch (e: Exception) {
+                    Log.e("saveFile", e.toString())
+                } finally {
+                    input?.close()
                 }
-                it.flush()
             }
-            Log.e("sucessssssssssss", "");
-            return pathWhereYouWantToSaveFile
-        }catch (e:Exception){
-            Log.e("saveFile",e.toString())
         }
-        finally {
-            input?.close()
-        }
-        return ""
     }
 
-    private val mutex = Mutex()
+    val mutex = Mutex();
 
     private suspend fun insert(downloadableSong: DownloadableSong, path: String) {
+        withContext(Dispatchers.IO) {
+
             mutex.withLock {
                 val artists = database.getArtistsNames();
 
@@ -116,6 +132,7 @@ class MainViewModel(val database: MusicDatabaseDao,
 
                 database.insertSong(newSong);
             }
+        }
     }
 
     private fun convertToDownloadableSong(downloadableSongsSelectedParcelable: Array<Parcelable>): MutableList<DownloadableSong> {

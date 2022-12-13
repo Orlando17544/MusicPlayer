@@ -20,6 +20,9 @@
         android:theme="@style/Theme.YoutubeMusicPlayer"
         tools:targetApi="31">
         <activity
+            android:name=".SearchActivity"
+            android:exported="false" />
+        <activity
             android:name=".playlists.PlaylistSongsActivity"
             android:exported="false" />
         <activity
@@ -32,7 +35,7 @@
             android:name=".genres.GenreSongsActivity"
             android:exported="false" />
         <activity
-            android:name="com.example.android.youtubemusicplayer.download_music.DownloadMusicActivity"
+            android:name=".download_music.DownloadMusicActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

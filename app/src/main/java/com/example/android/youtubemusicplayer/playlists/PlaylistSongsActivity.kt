@@ -1,5 +1,6 @@
 package com.example.android.youtubemusicplayer.playlists
 
+import android.content.Intent
 import android.graphics.Color
 import android.media.MediaPlayer
 import android.os.Bundle
@@ -13,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android.youtubemusicplayer.MusicPlayer
 import com.example.android.youtubemusicplayer.R
+import com.example.android.youtubemusicplayer.SearchActivity
 import com.example.android.youtubemusicplayer.database.MusicDatabase
 import com.example.android.youtubemusicplayer.database.Playlist
 import com.example.android.youtubemusicplayer.database.Song
@@ -42,8 +44,8 @@ class PlaylistSongsActivity : AppCompatActivity() {
         topAppBar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.search_songs -> {
-                    // Handle favorite icon press
-                    // Start another activity
+                    val intent = Intent(this, SearchActivity::class.java);
+                    startActivity(intent);
                     true
                 }
 

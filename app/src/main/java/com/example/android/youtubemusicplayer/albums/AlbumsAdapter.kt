@@ -12,10 +12,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.android.youtubemusicplayer.R
 import com.example.android.youtubemusicplayer.database.Album
 import com.example.android.youtubemusicplayer.database.AlbumAndArtist
+import com.example.android.youtubemusicplayer.database.Playlist
 
 class AlbumsAdapter: ListAdapter<AlbumAndArtist, AlbumsAdapter.AlbumsViewHolder>(
     AlbumsDiffCallback()
 ) {
+
+    lateinit var onItemSelected: ((album: Album) -> Unit);
     lateinit var onOptionsSelected: ((view: View, menuRes: Int, albumAndArtist: AlbumAndArtist) -> Unit);
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AlbumsViewHolder {
@@ -43,14 +46,10 @@ class AlbumsAdapter: ListAdapter<AlbumAndArtist, AlbumsAdapter.AlbumsViewHolder>
             holder.itemView.findViewById<TextView>(R.id.artist_name).text = item?.artist?.name;
         }
 
-        /*
-        holder.itemView.findViewById<LinearLayout>(R.id.clickable_playlist)
+        holder.itemView.findViewById<LinearLayout>(R.id.clickable_album)
             .setOnClickListener(View.OnClickListener {
-                print("algo")
+                onItemSelected.invoke(item.album);
             })
-
-
-         */
 
         holder.itemView.findViewById<ImageView>(R.id.album_options)
             .setOnClickListener(View.OnClickListener {

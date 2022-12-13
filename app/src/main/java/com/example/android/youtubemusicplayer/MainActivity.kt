@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.example.android.youtubemusicplayer.database.MusicDatabase
 import com.example.android.youtubemusicplayer.download_music.DownloadMusicActivity
@@ -21,6 +22,7 @@ import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
@@ -93,7 +95,7 @@ class MainActivity : AppCompatActivity() {
             val songsToDownload : Array<Parcelable> =
                 it.data?.extras?.getParcelableArray("songsToDownload") as Array<Parcelable>;
 
-            viewModel.onDownload(songsToDownload);
+                viewModel.onDownload(songsToDownload);
         }
     })
 
