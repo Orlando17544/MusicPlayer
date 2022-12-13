@@ -30,7 +30,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            app:tabMode="scrollable" />
+            app:tabMode="scrollable"
+            app:tabSelectedTextColor="#ecaf31"
+            app:tabIndicatorColor="#ecaf31"
+            app:tabTextColor="#8589a3"
+            android:background="#2a3259"/>
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/viewPager2"
