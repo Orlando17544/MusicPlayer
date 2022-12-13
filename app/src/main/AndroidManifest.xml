@@ -23,22 +23,7 @@
             android:name=".CategorySongsActivity"
             android:exported="false" />
         <activity
-            android:name=".artists.ArtistSongs2Activity"
-            android:exported="false" />
-        <activity
             android:name=".SearchSongsActivity"
-            android:exported="false" />
-        <activity
-            android:name=".playlists.PlaylistSongsActivity"
-            android:exported="false" />
-        <activity
-            android:name=".artists.ArtistSongsActivity"
-            android:exported="false" />
-        <activity
-            android:name=".albums.AlbumSongsActivity"
-            android:exported="false" />
-        <activity
-            android:name=".genres.GenreSongsActivity"
             android:exported="false" />
         <activity
             android:name=".download_music.DownloadMusicActivity"

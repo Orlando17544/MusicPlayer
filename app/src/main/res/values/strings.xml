@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">YoutubeMusicPlayer</string>
+    <string name="app_name">MusicPlayer</string>
     <string name="download_music">Download music</string>
     <string name="content_description_download_music">It is to navigate to another activity to download music</string>
     <string name="search_songs">Search for songs</string>
