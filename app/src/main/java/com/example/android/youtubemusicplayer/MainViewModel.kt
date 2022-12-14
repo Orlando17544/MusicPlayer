@@ -109,7 +109,9 @@ class MainViewModel(
 
                 val newSong: Song = Song();
 
-                if (artists.filter { it == downloadableSong.artist }.size == 0) {
+                val artistNameList = artists.filter { it == downloadableSong.artist };
+
+                if (artistNameList.size == 0) {
                     val newArtist: Artist = Artist();
 
                     newArtist.name = downloadableSong.artist;
@@ -124,6 +126,11 @@ class MainViewModel(
                     val newAlbumId = database.insertAlbum(newAlbum);
 
                     newSong.albumContainerId = newAlbumId;
+                } else if (artistNameList.size == 1) {
+                    val artistName = artistNameList.get(0);
+                    val artist = database.getArtistByName(artistName);
+
+                    newSong.albumContainerId = database.getAlbumsByArtistId(artist.artistId).get(0).albumId;
                 }
 
                 newSong.path = path;
