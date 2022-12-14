@@ -12,6 +12,7 @@ import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -31,8 +32,11 @@ class MainActivity : AppCompatActivity() {
     private lateinit var viewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val screenSplash = installSplashScreen();
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        screenSplash.setKeepOnScreenCondition{ false }
 
         val dataSource = MusicDatabase.getInstance(application).musicDatabaseDao;
         val viewModelFactory = MainViewModelFactory(dataSource, application)
