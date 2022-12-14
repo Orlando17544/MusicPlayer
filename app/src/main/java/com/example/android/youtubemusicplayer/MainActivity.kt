@@ -1,7 +1,12 @@
 package com.example.android.youtubemusicplayer
 
+import android.content.Context
 import android.content.Intent
 import android.media.MediaPlayer
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkInfo
+import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.View
@@ -10,6 +15,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -100,10 +106,38 @@ class MainActivity : AppCompatActivity() {
 
     val launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult(), ActivityResultCallback {
         if (it.resultCode == RESULT_OK) {
-            val songsToDownload : Array<Parcelable> =
-                it.data?.extras?.getParcelableArray("songsToDownload") as Array<Parcelable>;
+            val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
-                viewModel.onDownload(songsToDownload);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                cm.registerDefaultNetworkCallback(object: ConnectivityManager.NetworkCallback() {
+                    override fun onAvailable(network: Network) {
+                        super.onAvailable(network)
+
+                        val songsToDownload : Array<Parcelable> =
+                            it.data?.extras?.getParcelableArray("songsToDownload") as Array<Parcelable>;
+
+                        viewModel.onDownload(songsToDownload);
+                    }
+
+                    override fun onLost(network: Network) {
+                        super.onLost(network)
+                        Snackbar.make(findViewById(R.id.root), "You disconnected from internet", Snackbar.LENGTH_SHORT).show();
+                    }
+                })
+            } else {
+                val activeNetwork: NetworkInfo? = cm.activeNetworkInfo
+                val isConnected: Boolean = activeNetwork?.isConnectedOrConnecting == true
+
+                if (isConnected) {
+                    val songsToDownload : Array<Parcelable> =
+                        it.data?.extras?.getParcelableArray("songsToDownload") as Array<Parcelable>;
+
+                    viewModel.onDownload(songsToDownload);
+                } else {
+                    Snackbar.make(this.findViewById(R.id.root), "", Snackbar.LENGTH_SHORT).show();
+                    return@ActivityResultCallback;
+                }
+            }
         }
     })
 
