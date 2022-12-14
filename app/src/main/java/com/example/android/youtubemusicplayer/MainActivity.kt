@@ -134,7 +134,7 @@ class MainActivity : AppCompatActivity() {
 
                     viewModel.onDownload(songsToDownload);
                 } else {
-                    Snackbar.make(this.findViewById(R.id.root), "", Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(this.findViewById(R.id.root), "There is no internet connection ", Snackbar.LENGTH_SHORT).show();
                     return@ActivityResultCallback;
                 }
             }
