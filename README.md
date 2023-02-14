@@ -33,7 +33,7 @@ Create an application to download music from different artists. The user can man
 
 ## Install
 
-Just download the app on this [url](https://github.com/Orlando17544/Portfolio/blob/main/src/assets/musicPlayer.gif) and install it in an android phone.
+Just download the app on this [url](https://github.com/Orlando17544/Portfolio/blob/main/musicPlayer.apk) and install it in an android phone.
 
 ---
 
