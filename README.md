@@ -29,6 +29,7 @@ Create an application to download music from different artists. The user can man
 - RecyclerView
 - Retrofit
 - MediaPlayer
+- Google Cloud Storage
 
 ## Install
 
