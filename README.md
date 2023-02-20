@@ -6,9 +6,9 @@ Android application to download music of a repertoire hosted by Cloud Storage (F
 
 Create an application to download music from different artists. The user can manage the songs he wants to download (listen, update and delete). The user can also organize their songs in playlists that he can create. 
 
-## Features
+## Requeriments
 
-1. The app has 227 songs from 16 artists (Ariana Grande, Daft Punk, Eminem, Jimi Hendrix, John Lennon, Led Zeppelin, Luis Fonsi, Michael Jackson, Nirvana, Pink Floyd, Queen, Taylor Swift, Jimi Hendrix, The plastic Ono Band, The Rolling Stones, Wisin & Yandel)
+1. The app must have 227 songs from 16 artists (Ariana Grande, Daft Punk, Eminem, Jimi Hendrix, John Lennon, Led Zeppelin, Luis Fonsi, Michael Jackson, Nirvana, Pink Floyd, Queen, Taylor Swift, Jimi Hendrix, The plastic Ono Band, The Rolling Stones, Wisin & Yandel)
 2. The songs are only samples.
 3. Each artist has different number of songs.
 4. Each song can be downloaded, listened and deleted by the user.
