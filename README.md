@@ -19,13 +19,20 @@ Create an application to download music from different artists. The user can man
 ## Stack
 
 - Android SDK
-- Kotlin
-- Architecture components (ViewModel and LiveData)
-- Room (SQLite)
-- RecyclerView
-- Retrofit
+- Kotlin: 1.7.0
+- Material design: 1.7.0
+- Architecture components (ViewModel and LiveData): 2.5.1
+- Room (SQLite): 2.4.3
+- RecyclerView: 1.0.0
+- Retrofit: 2.9.0
 - MediaPlayer
-- Google Cloud Storage
+- Google Cloud Storage: 20.0.0
+
+## Tools
+
+- Android Studio Chipmunk
+- GitHub
+- Git 2.30.2
 
 ## Install
 
